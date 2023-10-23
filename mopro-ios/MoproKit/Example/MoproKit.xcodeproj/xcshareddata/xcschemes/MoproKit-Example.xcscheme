@@ -83,6 +83,13 @@
             ReferencedContainer = "container:MoproKit.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "CIRCUIT_WASM_DYLIB"
+            value = "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/keccak256.dylib"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

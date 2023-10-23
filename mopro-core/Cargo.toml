@@ -5,14 +5,26 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = ["dylib"]
+dylib = ["wasmer/dylib"]
+#dylib = ["wasmer/dylib", "wasmer-engine-dylib", "wasmer-compiler-cranelift"]
+
 [dependencies]
-ark-circom = { git = "https://github.com/arkworks-rs/circom-compat.git" }
+#ark-circom = { git = "https://github.com/arkworks-rs/circom-compat.git" }
+ark-circom = { git = "https://github.com/oskarth/circom-compat.git", branch = "fix/wasm-memory" } # branch = "feat/support-dylib" }
+#ark-circom = { path = "../../circom-compat", rev = "630b17e" }
 serde = { version = "1.0", features = ["derive"] }
 ark-serialize = { version = "=0.4.1", features = ["derive"] }
 num-bigint = { version = "=0.4.3", default-features = false, features = [
     "rand",
 ] }
 instant = "0.1"
+#wasmer = { version = "2.3" }
+#wasmer = { path = "../../wasmer" }
+#wasmer-vm = { path = "../../wasmer/lib/vm" }
+wasmer = { git = "https://github.com/oskarth/wasmer.git", branch = "fix/memory2" }
+once_cell = "1.8"
 
 # ZKP generation
 ark-ec = { version = "=0.4.1", default-features = false, features = [
@@ -31,3 +43,20 @@ ark-groth16 = { version = "=0.4.0", default-features = false, features = [
 thiserror = "=1.0.39"
 color-eyre = "=0.6.2"
 criterion = "=0.3.6"
+
+[patch.crates-io]
+wasmer = { git = "https://github.com/oskarth/wasmer.git", branch = "fix/memory2" }
+
+
+[build-dependencies]
+color-eyre = "0.6"
+enumset = "1.0.8"
+uniffi = { version = "0.24", features = ["build"] }
+#wasmer = { path = "../../wasmer" }
+#wasmer-vm = { path = "../../wasmer/lib/vm" }
+#wasmer = { version = "2.3" }
+wasmer = { git = "https://github.com/oskarth/wasmer.git", branch = "fix/memory2" }
+wasmer-engine-dylib = { version = "2.2.1", optional = true, features = [
+    "compiler",
+] }
+wasmer-compiler-cranelift = { version = "2.2.1", optional = true }

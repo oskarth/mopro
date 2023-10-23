@@ -687,6 +687,22 @@ public func initCircomState() throws {
     }
 }
 
+public func initialize(path: String) {
+    try! rustCall {
+        uniffi_mopro_fn_func_initialize(
+            FfiConverterString.lower(path), $0
+        )
+    }
+}
+
+public func generateProof2(circuitInputs: [String: [Int32]]) throws {
+    try rustCallWithError(FfiConverterTypeMoproError.lift) {
+        uniffi_mopro_fn_func_generate_proof2(
+            FfiConverterDictionaryStringSequenceInt32.lower(circuitInputs), $0
+        )
+    }
+}
+
 private enum InitializationResult {
     case ok
     case contractVersionMismatch
@@ -710,6 +726,12 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_mopro_checksum_func_init_circom_state() != 20999 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_mopro_checksum_func_initialize() != 52367 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_mopro_checksum_func_generate_proof2() != 11464 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_mopro_checksum_method_moprocircom_setup() != 40345 {

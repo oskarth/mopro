@@ -33,3 +33,6 @@ Pods
 # Ignore static libs
 *.a
 
+# Ignore dynamic libs
+*.dylib
+

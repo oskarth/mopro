@@ -30,6 +30,7 @@ criterion = "=0.3.6"
 
 [build-dependencies]
 uniffi = { version = "0.24", features = ["build"] }
+mopro-core = { path = "../mopro-core" }
 
 [dev-dependencies]
 uniffi = { version = "0.24", features = ["bindgen-tests"] }

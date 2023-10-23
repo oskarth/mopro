@@ -4,6 +4,7 @@ use mopro_core::MoproError;
 use num_bigint::BigInt;
 
 use std::collections::HashMap;
+use std::path::Path;
 use std::sync::RwLock;
 
 #[derive(Debug)]
@@ -41,6 +42,23 @@ impl Default for MoproCircom {
     fn default() -> Self {
         Self::new()
     }
+}
+
+fn initialize(path: String) {
+    circom::initialize(Path::new(path.as_str()));
+}
+
+// TODO: Basic generate_proof thing here
+fn generate_proof2(inputs: HashMap<String, Vec<i32>>) -> Result<(), MoproError> {
+    // Convert inputs to BigInt
+    let bigint_inputs = inputs
+        .into_iter()
+        .map(|(k, v)| (k, v.into_iter().map(|i| BigInt::from(i)).collect()))
+        .collect();
+
+    let _foo = circom::generate_proof2(bigint_inputs)?;
+
+    Ok(())
 }
 
 // TODO: Use setup, prove and verify functions from mopro_core

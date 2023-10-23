@@ -35,8 +35,10 @@ TODO: Add long description of the pod here.
   # libmopro library, headers and modulemap
   # XXX: static library is not in source control, and needs to be inlcuded manually
   # Have to be mindful of architecture and simulator or not here, should be improved
-  s.preserve_paths = 'Libs/libmopro_uniffi.a'
-  s.vendored_libraries = 'Libs/libmopro_uniffi.a'
+#  s.preserve_paths = 'Libs/libmopro_uniffi.a'
+#  s.vendored_libraries = 'Libs/libmopro_uniffi.a'
+  s.preserve_paths = 'Libs/libmopro_uniffi.dylib'
+  s.vendored_libraries = 'Libs/libmopro_uniffi.dylib'
   s.source_files = 'Include/*.h', 'Bindings/*.swift'
   s.resource = 'Resources/moproFFI.modulemap'
 

@@ -24,9 +24,58 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        runSetup()
+        //runSetup()
+        runInit()
+        runGenerateProof2()
     }
 
+    func runInit() {
+        // XXX This path is wrong, relative to build dir not actual bundle
+        //let dylibPath = ProcessInfo.processInfo.environment["CIRCUIT_WASM_DYLIB"] ?? ""
+
+        let dylibPath = Bundle.main.bundlePath + "/keccak256.dylib"
+
+        print("CIRCUIT_WASM_DYLIB path: \(dylibPath)");
+
+        // Pass env variable to Rust with initalize fn
+        do {
+            try MoproKit.initialize(path: dylibPath)
+        } catch let error as MoproError {
+            print("MoproError: \(error)")
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+
+    }
+
+    func runGenerateProof2() {
+        do {
+            // Prepare inputs
+            let inputVec: [UInt8] = [
+                116, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+            ]
+            let bits = bytesToBits(bytes: inputVec)
+            var inputs = [String: [Int32]]()
+            inputs["in"] = bits
+            
+            // Record start time
+            let start = CFAbsoluteTimeGetCurrent()
+            
+            // Generate Proof
+            try MoproKit.generateProof2(circuitInputs: inputs)
+            //assert(!generateProofResult.proof.isEmpty, "Proof should not be empty")
+            
+            // Record end time and compute duration
+            let end = CFAbsoluteTimeGetCurrent()
+            let timeTaken = end - start
+        } catch let error as MoproError {
+            print("MoproError: \(error)")
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+    }
+    
     func runSetup() {
         if let wasmPath = Bundle.main.path(forResource: "keccak256_256_test", ofType: "wasm"),
            let r1csPath = Bundle.main.path(forResource: "keccak256_256_test", ofType: "r1cs") {
