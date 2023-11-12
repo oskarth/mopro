@@ -95,11 +95,11 @@ pub fn initialize(dylib_path: &Path) {
         .set(from_dylib(dylib_path))
         .expect("Failed to set WITNESS_CALCULATOR");
 
-    // Initialize ZKEY
-    // TODO: Speed this up
+    // Initialize ARKZKEY
+    // TODO: Speed this up even more!
     let now = std::time::Instant::now();
-    Lazy::force(&ZKEY);
-    println!("Initializing zkey took: {:.2?}", now.elapsed());
+    Lazy::force(&ARKZKEY);
+    println!("Initializing arkzkey took: {:.2?}", now.elapsed());
 }
 
 #[cfg(not(feature = "dylib"))]
@@ -845,9 +845,12 @@ mod tests {
             println!("Error: {:?}", e);
         }
 
+        //let serialized_outputs = bytes_to_circuit_outputs(&expected_output_vec);
+
         assert!(generate_proof_res.is_ok());
 
         let (serialized_proof, serialized_inputs) = generate_proof_res.unwrap();
+        //assert_eq!(serialized_inputs, serialized_outputs);
 
         // Proof verification
         let verify_res = verify_proof2(serialized_proof, serialized_inputs);

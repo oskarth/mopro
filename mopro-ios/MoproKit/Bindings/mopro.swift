@@ -674,6 +674,14 @@ public func initializeMopro() throws {
     }
 }
 
+public func initializeMoproDylib(dylibPath: String) throws {
+    try rustCallWithError(FfiConverterTypeMoproError.lift) {
+        uniffi_mopro_fn_func_initialize_mopro_dylib(
+            FfiConverterString.lower(dylibPath), $0
+        )
+    }
+}
+
 public func generateProof2(circuitInputs: [String: [String]]) throws -> GenerateProofResult {
     return try FfiConverterTypeGenerateProofResult.lift(
         rustCallWithError(FfiConverterTypeMoproError.lift) {
@@ -718,6 +726,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_mopro_checksum_func_initialize_mopro() != 10574 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_mopro_checksum_func_initialize_mopro_dylib() != 54225 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_mopro_checksum_func_generate_proof2() != 6969 {

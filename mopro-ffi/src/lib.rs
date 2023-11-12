@@ -4,6 +4,7 @@ use mopro_core::MoproError;
 use num_bigint::BigInt;
 
 use std::collections::HashMap;
+use std::path::Path;
 use std::str::FromStr;
 use std::sync::RwLock;
 
@@ -44,10 +45,31 @@ impl Default for MoproCircom {
     }
 }
 
+#[cfg(not(feature = "dylib"))]
 pub fn initialize_mopro() -> Result<(), MoproError> {
     // TODO: Error handle / panic?
     circom::initialize();
     Ok(())
+}
+
+#[cfg(feature = "dylib")]
+pub fn initialize_mopro() -> Result<(), MoproError> {
+    println!("need to use dylib to init!");
+    panic!("need to use dylib to init!");
+}
+
+#[cfg(feature = "dylib")]
+pub fn initialize_mopro_dylib(dylib_path: String) -> Result<(), MoproError> {
+    // TODO: Error handle / panic?
+    let dylib_path = Path::new(dylib_path.as_str());
+    circom::initialize(dylib_path);
+    Ok(())
+}
+
+#[cfg(not(feature = "dylib"))]
+pub fn initialize_mopro_dylib(dylib_path: String) -> Result<(), MoproError> {
+    println!("dylib feature not enabled!");
+    panic!("dylib feature not enabled!");
 }
 
 pub fn generate_proof2(

@@ -79,6 +79,11 @@ PROJECT_DIR=$(pwd)
 TARGET_DIR=${PROJECT_DIR}/target
 MOPROKIT_DIR=${PROJECT_DIR}/mopro-ios/MoproKit
 
+# For dylib stuff
+mkdir -p ${TARGET_DIR}/${ARCHITECTURE}/${BUILD_MODE}
+export TARGET_DIR
+export BUILD_MODE
+
 print_action "Generating Swift bindings..."
 uniffi-bindgen generate ${PROJECT_DIR}/mopro-ffi/src/mopro.udl --language swift --out-dir ${TARGET_DIR}/SwiftBindings
 
@@ -88,6 +93,15 @@ if [[ "$BUILD_MODE" == "debug" ]]; then
     cargo build --target ${ARCHITECTURE}
 elif [[ "$BUILD_MODE" == "release" ]]; then
     cargo build --release --target ${ARCHITECTURE}
+fi
+
+# Build dylib
+print_action "Building mopro-ffi dynamic library ($BUILD_MODE)..."
+cd ${PROJECT_DIR}/mopro-ffi
+if [[ "$BUILD_MODE" == "debug" ]]; then
+    cargo build --target ${ARCHITECTURE} --features dylib
+elif [[ "$BUILD_MODE" == "release" ]]; then
+    cargo build --release --target ${ARCHITECTURE} --features dylib
 fi
 
 # Print appropriate message based on device type
@@ -104,10 +118,21 @@ fi
 
 cp ${PROJECT_DIR}/mopro-ffi/target/${ARCHITECTURE}/${LIB_DIR}/libmopro_ffi.a ${TARGET_DIR}/
 
+# Dylib
+cp ${PROJECT_DIR}/mopro-core/target/${ARCHITECTURE}/${LIB_DIR}/rsa.dylib ${TARGET_DIR}/
+
 print_action "Copying Swift bindings and static library to MoproKit..."
 cp ${TARGET_DIR}/SwiftBindings/moproFFI.h ${MOPROKIT_DIR}/Include/
 cp ${TARGET_DIR}/SwiftBindings/mopro.swift ${MOPROKIT_DIR}/Bindings/
 cp ${TARGET_DIR}/SwiftBindings/moproFFI.modulemap ${MOPROKIT_DIR}/Resources/
 cp ${TARGET_DIR}/libmopro_ffi.a ${MOPROKIT_DIR}/Libs/
+
+# Dylib
+cp ${TARGET_DIR}/rsa.dylib ${MOPROKIT_DIR}/Libs/
+
+# Fix dynamic lib install paths
+# NOTE: Xcode might already do this for us
+install_name_tool -id @rpath/rsa.dylib ${MOPROKIT_DIR}/Libs/rsa.dylib
+codesign -f -s "${APPLE_SIGNING_IDENTITY}" ${MOPROKIT_DIR}/Libs/rsa.dylib
 
 print_action "Done! Please re-build your project in Xcode."

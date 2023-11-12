@@ -16,19 +16,11 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		7A38AEC233A3880A843B0133 /* Pods_MoproKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BE5A40EAC7D019B9C7566CA /* Pods_MoproKit_Example.framework */; };
-		CE2C1B8C2AFFCC5E002AF8BC /* main.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CE2C1B8B2AFFCC5E002AF8BC /* main.wasm */; };
-		CE2C1B8D2AFFCC5E002AF8BC /* main.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CE2C1B8B2AFFCC5E002AF8BC /* main.wasm */; };
-		CE5A5C062AD43A790074539D /* keccak256_256_test.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CE5A5C052AD43A790074539D /* keccak256_256_test.wasm */; };
-		CE5A5C072AD43A790074539D /* keccak256_256_test.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CE5A5C052AD43A790074539D /* keccak256_256_test.wasm */; };
-		CE5A5C092AD43A860074539D /* keccak256_256_test.r1cs in Resources */ = {isa = PBXBuildFile; fileRef = CE5A5C082AD43A860074539D /* keccak256_256_test.r1cs */; };
-		CE5A5C0A2AD43A860074539D /* keccak256_256_test.r1cs in Resources */ = {isa = PBXBuildFile; fileRef = CE5A5C082AD43A860074539D /* keccak256_256_test.r1cs */; };
-		CEA2D12F2AB96A7A00F292D2 /* multiplier2.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CEA2D12E2AB96A7A00F292D2 /* multiplier2.wasm */; };
-		CEA2D1302AB96A7A00F292D2 /* multiplier2.wasm in Resources */ = {isa = PBXBuildFile; fileRef = CEA2D12E2AB96A7A00F292D2 /* multiplier2.wasm */; };
-		CEA2D1322AB96AB500F292D2 /* multiplier2.r1cs in Resources */ = {isa = PBXBuildFile; fileRef = CEA2D1312AB96AB500F292D2 /* multiplier2.r1cs */; };
-		CEA2D1332AB96AB500F292D2 /* multiplier2.r1cs in Resources */ = {isa = PBXBuildFile; fileRef = CEA2D1312AB96AB500F292D2 /* multiplier2.r1cs */; };
 		CEB804502AFF81960063F091 /* KeccakSetupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB8044F2AFF81960063F091 /* KeccakSetupViewController.swift */; };
 		CEB804562AFF81AF0063F091 /* KeccakZkeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB804552AFF81AF0063F091 /* KeccakZkeyViewController.swift */; };
 		CEB804582AFF81BF0063F091 /* RSAViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB804572AFF81BF0063F091 /* RSAViewController.swift */; };
+		CECAC9172B00E8F90060586C /* rsa.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CECAC9162B00E8F90060586C /* rsa.dylib */; };
+		CECAC91A2B00EBD10060586C /* rsa.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = CECAC9162B00E8F90060586C /* rsa.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E69338642AFFDB1A00B80312 /* AnonAadhaarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E69338632AFFDB1A00B80312 /* AnonAadhaarViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +33,19 @@
 			remoteInfo = MoproKit;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CECAC9192B00EBCC0060586C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CECAC91A2B00EBD10060586C /* rsa.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1E5E014D70B48C9A59F14658 /* Pods-MoproKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoproKit_Example.release.xcconfig"; path = "Target Support Files/Pods-MoproKit_Example/Pods-MoproKit_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -63,14 +68,10 @@
 		92580ABC3B6DBAD1A9544456 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B4016A34BBB20BC381CCFC2D /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		C61628A63419B5C140B24AF7 /* Pods-MoproKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoproKit_Example.debug.xcconfig"; path = "Target Support Files/Pods-MoproKit_Example/Pods-MoproKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		CE2C1B8B2AFFCC5E002AF8BC /* main.wasm */ = {isa = PBXFileReference; lastKnownFileType = file; name = main.wasm; path = "../../../../../mopro-core/examples/circom/rsa/target/main_js/main.wasm"; sourceTree = "<group>"; };
-		CE5A5C052AD43A790074539D /* keccak256_256_test.wasm */ = {isa = PBXFileReference; lastKnownFileType = file; name = keccak256_256_test.wasm; path = "../../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_js/keccak256_256_test.wasm"; sourceTree = "<group>"; };
-		CE5A5C082AD43A860074539D /* keccak256_256_test.r1cs */ = {isa = PBXFileReference; lastKnownFileType = file; name = keccak256_256_test.r1cs; path = "../../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test.r1cs"; sourceTree = "<group>"; };
-		CEA2D12E2AB96A7A00F292D2 /* multiplier2.wasm */ = {isa = PBXFileReference; lastKnownFileType = file; name = multiplier2.wasm; path = "../../../../../mopro-core/examples/circom/multiplier2/target/multiplier2_js/multiplier2.wasm"; sourceTree = "<group>"; };
-		CEA2D1312AB96AB500F292D2 /* multiplier2.r1cs */ = {isa = PBXFileReference; lastKnownFileType = file; name = multiplier2.r1cs; path = "../../../../../mopro-core/examples/circom/multiplier2/target/multiplier2.r1cs"; sourceTree = "<group>"; };
 		CEB8044F2AFF81960063F091 /* KeccakSetupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeccakSetupViewController.swift; sourceTree = "<group>"; };
 		CEB804552AFF81AF0063F091 /* KeccakZkeyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeccakZkeyViewController.swift; sourceTree = "<group>"; };
 		CEB804572AFF81BF0063F091 /* RSAViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSAViewController.swift; sourceTree = "<group>"; };
+		CECAC9162B00E8F90060586C /* rsa.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = rsa.dylib; sourceTree = "<group>"; };
 		E69338632AFFDB1A00B80312 /* AnonAadhaarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonAadhaarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CECAC9172B00E8F90060586C /* rsa.dylib in Frameworks */,
 				7A38AEC233A3880A843B0133 /* Pods_MoproKit_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -97,6 +99,7 @@
 		164B820D208F5EFE221D6A86 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CECAC9162B00E8F90060586C /* rsa.dylib */,
 				8BE5A40EAC7D019B9C7566CA /* Pods_MoproKit_Example.framework */,
 				78B0F9CBE5DD22576996A993 /* Pods_MoproKit_Tests.framework */,
 			);
@@ -131,7 +134,6 @@
 				E69338632AFFDB1A00B80312 /* AnonAadhaarViewController.swift */,
 				CEB804552AFF81AF0063F091 /* KeccakZkeyViewController.swift */,
 				CEB8044F2AFF81960063F091 /* KeccakSetupViewController.swift */,
-				CEA2D1282AB9681E00F292D2 /* Resources */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
@@ -179,18 +181,6 @@
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		CEA2D1282AB9681E00F292D2 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				CE2C1B8B2AFFCC5E002AF8BC /* main.wasm */,
-				CE5A5C082AD43A860074539D /* keccak256_256_test.r1cs */,
-				CE5A5C052AD43A790074539D /* keccak256_256_test.wasm */,
-				CEA2D12E2AB96A7A00F292D2 /* multiplier2.wasm */,
-				CEA2D1312AB96AB500F292D2 /* multiplier2.r1cs */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		EEB809FA0FFBEC7559BC7169 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -214,6 +204,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				AE90EE4FFCA95237FBC047A3 /* [CP] Embed Pods Frameworks */,
+				CECAC9192B00EBCC0060586C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -256,10 +247,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 2699K68G5P;
 						LastSwiftMigration = 0900;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = 2699K68G5P;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -290,14 +283,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEA2D1322AB96AB500F292D2 /* multiplier2.r1cs in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
-				CE5A5C062AD43A790074539D /* keccak256_256_test.wasm in Resources */,
-				CE2C1B8C2AFFCC5E002AF8BC /* main.wasm in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
-				CEA2D12F2AB96A7A00F292D2 /* multiplier2.wasm in Resources */,
-				CE5A5C092AD43A860074539D /* keccak256_256_test.r1cs in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,11 +293,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE5A5C0A2AD43A860074539D /* keccak256_256_test.r1cs in Resources */,
-				CE5A5C072AD43A790074539D /* keccak256_256_test.wasm in Resources */,
-				CE2C1B8D2AFFCC5E002AF8BC /* main.wasm in Resources */,
-				CEA2D1332AB96AB500F292D2 /* multiplier2.r1cs in Resources */,
-				CEA2D1302AB96A7A00F292D2 /* multiplier2.wasm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,11 +540,16 @@
 			baseConfigurationReference = C61628A63419B5C140B24AF7 /* Pods-MoproKit_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2699K68G5P;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = MoproKit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"\"$(SRCROOT)/\"",
+				);
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mopro.examples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -575,11 +563,16 @@
 			baseConfigurationReference = 1E5E014D70B48C9A59F14658 /* Pods-MoproKit_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2699K68G5P;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = MoproKit/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"\"$(SRCROOT)/\"",
+				);
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = org.mopro.examples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -593,7 +586,7 @@
 			baseConfigurationReference = 5DAF212A114DFA0C9F4282B2 /* Pods-MoproKit_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MoproKit_Example.app/MoproKit_Example";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2699K68G5P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -617,7 +610,7 @@
 			baseConfigurationReference = 90EAF1BEF8AD3C193665DBED /* Pods-MoproKit_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MoproKit_Example.app/MoproKit_Example";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2699K68G5P;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
