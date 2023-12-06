@@ -59,38 +59,65 @@ class AnonAadhaarViewController: UIViewController, WKScriptMessageHandler, WKNav
          ])
      }
     
-    
-    
     @objc func runInitAction() {
         // Update the textView on the main thread
         DispatchQueue.main.async {
             self.textView.text += "Initializing library\n"
         }
 
-        // Execute long-running tasks in the background
-        DispatchQueue.global(qos: .userInitiated).async {
-            // Record start time
+        if let frameworksPath = Bundle.main.privateFrameworksPath {
             let start = CFAbsoluteTimeGetCurrent()
+            let dylibPath = frameworksPath + "/rsa.dylib"
+
+            //self.textView.text += "CIRCUIT_WASM_DYLIB path: \(dylibPath)\n";
 
             do {
-                try initializeMopro()
+                try initializeMoproDylib(dylibPath: dylibPath)
 
                 // Record end time and compute duration
                 let end = CFAbsoluteTimeGetCurrent()
                 let timeTaken = end - start
+                self.textView.text += "Initializing arkzkey took \(timeTaken) seconds.\n"
 
-                // Again, update the UI on the main thread
-                DispatchQueue.main.async {
-                    self.textView.text += "Initializing arkzkey took \(timeTaken) seconds.\n"
-                }
             } catch {
-                // Handle errors - update UI on main thread
-                DispatchQueue.main.async {
-                    self.textView.text += "An error occurred during initialization: \(error)\n"
-                }
+                self.textView.text += "An error occurred during initialization: \(error)\n"
             }
         }
+        else {
+                print("Error getting paths for resources")
+            }
     }
+    
+    // @objc func runInitAction() {
+    //     // Update the textView on the main thread
+    //     DispatchQueue.main.async {
+    //         self.textView.text += "Initializing library\n"
+    //     }
+
+    //     // Execute long-running tasks in the background
+    //     DispatchQueue.global(qos: .userInitiated).async {
+    //         // Record start time
+    //         let start = CFAbsoluteTimeGetCurrent()
+
+    //         do {
+    //             try initializeMopro()
+
+    //             // Record end time and compute duration
+    //             let end = CFAbsoluteTimeGetCurrent()
+    //             let timeTaken = end - start
+
+    //             // Again, update the UI on the main thread
+    //             DispatchQueue.main.async {
+    //                 self.textView.text += "Initializing arkzkey took \(timeTaken) seconds.\n"
+    //             }
+    //         } catch {
+    //             // Handle errors - update UI on main thread
+    //             DispatchQueue.main.async {
+    //                 self.textView.text += "An error occurred during initialization: \(error)\n"
+    //             }
+    //         }
+    //     }
+    // }
     
     @objc func runProveAction(inputs: [String: [String]]) {
         // Logic for prove (generate_proof2)

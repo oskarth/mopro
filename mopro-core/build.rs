@@ -48,8 +48,8 @@ fn build_dylib(wasm_path: String, dylib_name: String) -> Result<()> {
     let dylib_file = out_dir.join(&dylib_name);
     let final_dir = PathBuf::from(&project_dir)
         .join("target")
-        .join(build_mode)
-        .join(&target_arch);
+        .join(&target_arch)
+        .join(build_mode);
 
     // if dylib_file.exists() {
     //     return Ok(());
@@ -95,7 +95,8 @@ fn main() -> Result<()> {
 
     #[cfg(feature = "dylib")]
     {
-        let dylib_name = "keccak256.dylib";
+        //let dylib_name = "keccak256.dylib";
+        let dylib_name = "rsa.dylib";
         build_dylib(wasm_path.clone(), dylib_name.to_string())?;
     }
     Ok(())

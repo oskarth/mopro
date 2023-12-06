@@ -6,6 +6,9 @@ namespace mopro {
   void initialize_mopro();
 
   [Throws=MoproError]
+  void initialize_mopro_dylib(string dylib_path);
+
+  [Throws=MoproError]
   GenerateProofResult generate_proof2(record<string, sequence<string>> circuit_inputs);
 
   [Throws=MoproError]
