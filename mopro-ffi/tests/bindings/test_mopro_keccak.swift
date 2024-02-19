@@ -1,10 +1,11 @@
 import mopro
 import Foundation
 
-let moproCircom = MoproCircom()
+let moproCircom = MoproCircom2()
 
 let wasmPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_js/keccak256_256_test.wasm"
 let r1csPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test.r1cs"
+let zkeyPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_final.arkzkey"
 
 // Helper function to convert bytes to bits
 func bytesToBits(bytes: [UInt8]) -> [String] {
@@ -45,8 +46,8 @@ func serializeOutputs(_ stringArray: [String]) -> [UInt8] {
 
 do {
     // Setup
-    let setupResult = try moproCircom.setup(wasmPath: wasmPath, r1csPath: r1csPath)
-    assert(!setupResult.provingKey.isEmpty, "Proving key should not be empty")
+    let setupResult = try moproCircom.initialize(zkeyPath: zkeyPath)
+    // assert(!setupResult.provingKey.isEmpty, "Proving key should not be empty")
 
     // Prepare inputs
     let inputVec: [UInt8] = [

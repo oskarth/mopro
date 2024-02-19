@@ -9,7 +9,7 @@ device_type = "arm64" # Options: x86_64, simulator, device, arm, arm64
 
 # debug is for Rust library to be in debug mode and release for release mode
 # We recommend release mode by default for performance
-build_mode = "debug" # Options: debug, release
+build_mode = "release" # Options: debug, release
 
 [circuit]
 dir = "examples/circom/keccak256" # Directory of the circuit

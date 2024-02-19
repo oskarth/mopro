@@ -4,7 +4,10 @@ use self::{
 };
 use crate::MoproError;
 
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    fs::{self},
+};
 //use std::io::Cursor;
 use std::sync::Mutex;
 use std::time::Instant;
@@ -47,6 +50,16 @@ type CircuitInputs = HashMap<String, Vec<BigInt>>;
 
 // TODO: Split up this namespace a bit, right now quite a lot of things going on
 
+pub struct CircomState2 {
+    zkey: Option<(ProvingKey<Bn254>, ConstraintMatrices<Fr>)>,
+}
+
+impl Default for CircomState2 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct CircomState {
     builder: Option<CircomBuilder<Bn254>>,
     circuit: Option<CircomCircuit<Bn254>>,
@@ -71,7 +84,15 @@ const ARKZKEY_BYTES: &[u8] = include_bytes!(env!("BUILD_RS_ARKZKEY_FILE"));
 //     let mut reader = Cursor::new(ZKEY_BYTES);
 //     read_zkey(&mut reader).expect("Failed to read zkey")
 // });
+// #[cfg(feature = "use_external_zkey")]
+fn load_arkzkey_from_file(
+    zkey_path: &str,
+) -> Result<(ProvingKey<Bn254>, ConstraintMatrices<Fr>), MoproError> {
+    let bytes = fs::read(zkey_path).map_err(|e| MoproError::IoError(e.to_string()))?;
+    read_arkzkey_from_bytes(&bytes).map_err(|e| MoproError::CircomError(e.to_string()))
+}
 
+#[cfg(not(feature = "use_external_zkey"))]
 static ARKZKEY: Lazy<(ProvingKey<Bn254>, ConstraintMatrices<Fr>)> = Lazy::new(|| {
     //let mut reader = Cursor::new(ARKZKEY_BYTES);
     // TODO: Use reader? More flexible; unclear if perf diff
@@ -133,8 +154,9 @@ fn from_dylib(path: &Path) -> Mutex<WitnessCalculator> {
 
 // Experimental
 #[must_use]
-pub fn arkzkey() -> &'static (ProvingKey<Bn254>, ConstraintMatrices<Fr>) {
-    &ARKZKEY
+pub fn arkzkey(zkey_path: &str) -> (ProvingKey<Bn254>, ConstraintMatrices<Fr>) {
+    load_arkzkey_from_file(zkey_path).unwrap()
+    // ARKZKEY.clone()
 }
 
 /// Provides access to the `WITNESS_CALCULATOR` singleton, initializing it if necessary.
@@ -169,6 +191,7 @@ pub fn witness_calculator() -> &'static Mutex<WitnessCalculator> {
 }
 
 pub fn generate_proof2(
+    zkey_path: &str,
     inputs: CircuitInputs,
 ) -> Result<(SerializableProof, SerializableInputs), MoproError> {
     let mut rng = thread_rng();
@@ -190,7 +213,7 @@ pub fn generate_proof2(
 
     let now = std::time::Instant::now();
     //let zkey = zkey();
-    let zkey = arkzkey();
+    let zkey = arkzkey(zkey_path);
     println!("Loading arkzkey took: {:.2?}", now.elapsed());
 
     let public_inputs = full_assignment.as_slice()[1..zkey.1.num_instance_variables].to_vec();
@@ -215,11 +238,12 @@ pub fn generate_proof2(
 }
 
 pub fn verify_proof2(
+    zkey_path: &str,
     serialized_proof: SerializableProof,
     serialized_inputs: SerializableInputs,
 ) -> Result<bool, MoproError> {
     let start = Instant::now();
-    let zkey = arkzkey();
+    let zkey = arkzkey(zkey_path);
     let pvk = prepare_verifying_key(&zkey.0.vk);
 
     let proof_verified =
@@ -229,6 +253,85 @@ pub fn verify_proof2(
     let verification_duration = start.elapsed();
     println!("Verification time 2: {:?}", verification_duration);
     Ok(proof_verified)
+}
+
+impl CircomState2 {
+    pub fn new() -> Self {
+        Self { zkey: None }
+    }
+
+    pub fn initialize(&mut self, zkey_path: &str) -> Result<(), MoproError> {
+        let zkey = load_arkzkey_from_file(zkey_path)?;
+        self.zkey = Some(zkey);
+        Ok(())
+    }
+
+    pub fn generate_proof(
+        &self,
+        inputs: CircuitInputs,
+    ) -> Result<(SerializableProof, SerializableInputs), MoproError> {
+        let mut rng = thread_rng();
+        let rng = &mut rng;
+
+        let r = ark_bn254::Fr::rand(rng);
+        let s = ark_bn254::Fr::rand(rng);
+
+        println!("Generating proof 2");
+
+        let now = std::time::Instant::now();
+        let full_assignment = witness_calculator()
+            .lock()
+            .expect("Failed to lock witness calculator")
+            .calculate_witness_element::<Bn254, _>(inputs, false)
+            .map_err(|e| MoproError::CircomError(e.to_string()))?;
+
+        println!("Witness generation took: {:.2?}", now.elapsed());
+
+        let now = std::time::Instant::now();
+        //let zkey = zkey();
+        let zkey = self.zkey.as_ref().ok_or(MoproError::CircomError(
+            "Zkey has not been set up".to_string(),
+        ))?;
+        println!("Loading arkzkey took: {:.2?}", now.elapsed());
+
+        let public_inputs = full_assignment.as_slice()[1..zkey.1.num_instance_variables].to_vec();
+
+        let now = std::time::Instant::now();
+        let ark_proof = Groth16::<_, CircomReduction>::create_proof_with_reduction_and_matrices(
+            &zkey.0,
+            r,
+            s,
+            &zkey.1,
+            zkey.1.num_instance_variables,
+            zkey.1.num_constraints,
+            full_assignment.as_slice(),
+        );
+
+        let proof = ark_proof.map_err(|e| MoproError::CircomError(e.to_string()))?;
+
+        println!("proof generation took: {:.2?}", now.elapsed());
+        Ok((SerializableProof(proof), SerializableInputs(public_inputs)))
+    }
+
+    pub fn verify_proof(
+        &self,
+        serialized_proof: SerializableProof,
+        serialized_inputs: SerializableInputs,
+    ) -> Result<bool, MoproError> {
+        let start = Instant::now();
+        let zkey = self.zkey.as_ref().ok_or(MoproError::CircomError(
+            "Zkey has not been set up".to_string(),
+        ))?;
+        let pvk = prepare_verifying_key(&zkey.0.vk);
+
+        let proof_verified =
+            GrothBn::verify_with_processed_vk(&pvk, &serialized_inputs.0, &serialized_proof.0)
+                .map_err(|e| MoproError::CircomError(e.to_string()))?;
+
+        let verification_duration = start.elapsed();
+        println!("Verification time 2: {:?}", verification_duration);
+        Ok(proof_verified)
+    }
 }
 
 impl CircomState {
@@ -496,6 +599,57 @@ mod tests {
     }
 
     #[test]
+    fn test_setup_prove_verify_keccak_zkey() {
+        let zkey_path = "./examples/circom/keccak256/target/keccak256_256_test_final.arkzkey";
+        // Instantiate CircomState
+        let mut circom_state = CircomState2::new();
+
+        // Setup
+        let setup_res = circom_state.initialize(zkey_path);
+        assert!(setup_res.is_ok());
+
+        let _serialized_pk = setup_res.unwrap();
+
+        // Deserialize the proving key and inputs if necessary
+
+        // Prepare inputs
+        let input_vec = vec![
+            116, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0,
+        ];
+
+        // Expected output
+        let expected_output_vec = vec![
+            37, 17, 98, 135, 161, 178, 88, 97, 125, 150, 143, 65, 228, 211, 170, 133, 153, 9, 88,
+            212, 4, 212, 175, 238, 249, 210, 214, 116, 170, 85, 45, 21,
+        ];
+
+        let inputs = bytes_to_circuit_inputs(&input_vec);
+        let serialized_outputs = bytes_to_circuit_outputs(&expected_output_vec);
+
+        // Proof generation
+        let generate_proof_res = circom_state.generate_proof(inputs);
+
+        // Check and print the error if there is one
+        if let Err(e) = &generate_proof_res {
+            println!("Error: {:?}", e);
+        }
+
+        assert!(generate_proof_res.is_ok());
+
+        let (serialized_proof, serialized_inputs) = generate_proof_res.unwrap();
+
+        // Check output
+        assert_eq!(serialized_inputs, serialized_outputs);
+
+        // Proof verification
+        let verify_res = circom_state.verify_proof(serialized_proof, serialized_inputs);
+        assert!(verify_res.is_ok());
+
+        assert!(verify_res.unwrap()); // Verifying that the proof was indeed verified
+    }
+
+    #[test]
     fn test_setup_error() {
         // Arrange: Create a new CircomState instance
         let mut circom_state = CircomState::new();
@@ -549,6 +703,8 @@ mod tests {
             initialize(Path::new(&dylib_path));
         }
 
+        let zkey_path = "./examples/circom/keccak256/target/keccak256_256_test_final.arkzkey";
+
         let input_vec = vec![
             116, 101, 115, 116, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0,
@@ -560,12 +716,12 @@ mod tests {
         let inputs = bytes_to_circuit_inputs(&input_vec);
         let serialized_outputs = bytes_to_circuit_outputs(&expected_output_vec);
 
-        let generate_proof_res = generate_proof2(inputs);
+        let generate_proof_res = generate_proof2(zkey_path, inputs);
         let (serialized_proof, serialized_inputs) = generate_proof_res.unwrap();
         assert_eq!(serialized_inputs, serialized_outputs);
 
         // Proof verification
-        let verify_res = verify_proof2(serialized_proof, serialized_inputs);
+        let verify_res = verify_proof2(zkey_path, serialized_proof, serialized_inputs);
         assert!(verify_res.is_ok());
         assert!(verify_res.unwrap()); // Verifying that the proof was indeed verified
     }
@@ -634,6 +790,7 @@ mod tests {
     #[ignore = "ignore for ci"]
     #[test]
     fn test_setup_prove_rsa2() {
+        let zkey_path = "./examples/circom/rsa/target/main_final.arkzkey";
         // Prepare inputs
         #[derive(serde::Deserialize)]
         struct InputData {
@@ -662,7 +819,7 @@ mod tests {
         );
 
         // Proof generation
-        let generate_proof_res = generate_proof2(inputs);
+        let generate_proof_res = generate_proof2(zkey_path, inputs);
 
         // Check and print the error if there is one
         if let Err(e) = &generate_proof_res {
@@ -674,7 +831,7 @@ mod tests {
         let (serialized_proof, serialized_inputs) = generate_proof_res.unwrap();
 
         // Proof verification
-        let verify_res = verify_proof2(serialized_proof, serialized_inputs);
+        let verify_res = verify_proof2(zkey_path, serialized_proof, serialized_inputs);
         assert!(verify_res.is_ok());
 
         assert!(verify_res.unwrap()); // Verifying that the proof was indeed verified

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		2A418AB02AF4B1200004B747 /* CircomUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A418AAF2AF4B1200004B747 /* CircomUITests.swift */; };
 		2A6E5BAF2AF499460052A601 /* CircomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A6E5BAE2AF499460052A601 /* CircomTests.swift */; };
+		2AAD38B22B6CC318004F37BB /* FileDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAD38B12B6CC318004F37BB /* FileDownloader.swift */; };
+		2ABABA752B709BD3009EBC9E /* keccak256_256_test_final.arkzkey in Resources */ = {isa = PBXBuildFile; fileRef = 2ABABA742B709BD3009EBC9E /* keccak256_256_test_final.arkzkey */; };
+		2ABABA762B709BD3009EBC9E /* keccak256_256_test_final.arkzkey in Resources */ = {isa = PBXBuildFile; fileRef = 2ABABA742B709BD3009EBC9E /* keccak256_256_test_final.arkzkey */; };
 		4384FD09A96F702A375841EE /* Pods_MoproKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78B0F9CBE5DD22576996A993 /* Pods_MoproKit_Tests.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -48,6 +51,8 @@
 		1E5E014D70B48C9A59F14658 /* Pods-MoproKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoproKit_Example.release.xcconfig"; path = "Target Support Files/Pods-MoproKit_Example/Pods-MoproKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		2A418AAF2AF4B1200004B747 /* CircomUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircomUITests.swift; sourceTree = "<group>"; };
 		2A6E5BAE2AF499460052A601 /* CircomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircomTests.swift; sourceTree = "<group>"; };
+		2AAD38B12B6CC318004F37BB /* FileDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloader.swift; sourceTree = "<group>"; };
+		2ABABA742B709BD3009EBC9E /* keccak256_256_test_final.arkzkey */ = {isa = PBXFileReference; lastKnownFileType = file; name = keccak256_256_test_final.arkzkey; path = "../../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_final.arkzkey"; sourceTree = "<group>"; };
 		47F8ADB0AC4168C6E874818D /* MoproKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MoproKit.podspec; path = ../MoproKit.podspec; sourceTree = "<group>"; };
 		5DAF212A114DFA0C9F4282B2 /* Pods-MoproKit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoproKit_Tests.debug.xcconfig"; path = "Target Support Files/Pods-MoproKit_Tests/Pods-MoproKit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* MoproKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoproKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -131,6 +136,7 @@
 		607FACD21AFB9204008FA782 /* Example for MoproKit */ = {
 			isa = PBXGroup;
 			children = (
+				2AAD38B12B6CC318004F37BB /* FileDownloader.swift */,
 				CEB804572AFF81BF0063F091 /* RSAViewController.swift */,
 				E6E6F42D2B5860F7002F5F18 /* AnonAadhaarViewControllerNew.swift */,
 				E69338632AFFDB1A00B80312 /* AnonAadhaarViewController.swift */,
@@ -188,6 +194,7 @@
 		CEA2D1282AB9681E00F292D2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2ABABA742B709BD3009EBC9E /* keccak256_256_test_final.arkzkey */,
 				CE2C1B8B2AFFCC5E002AF8BC /* main.wasm */,
 				CE5A5C082AD43A860074539D /* keccak256_256_test.r1cs */,
 				CE5A5C052AD43A790074539D /* keccak256_256_test.wasm */,
@@ -300,6 +307,7 @@
 			files = (
 				CEA2D1322AB96AB500F292D2 /* multiplier2.r1cs in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
+				2ABABA752B709BD3009EBC9E /* keccak256_256_test_final.arkzkey in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				CE5A5C062AD43A790074539D /* keccak256_256_test.wasm in Resources */,
 				CE2C1B8C2AFFCC5E002AF8BC /* main.wasm in Resources */,
@@ -315,6 +323,7 @@
 			files = (
 				CE5A5C0A2AD43A860074539D /* keccak256_256_test.r1cs in Resources */,
 				CE5A5C072AD43A790074539D /* keccak256_256_test.wasm in Resources */,
+				2ABABA762B709BD3009EBC9E /* keccak256_256_test_final.arkzkey in Resources */,
 				CE2C1B8D2AFFCC5E002AF8BC /* main.wasm in Resources */,
 				CEA2D1332AB96AB500F292D2 /* multiplier2.r1cs in Resources */,
 				CEA2D1302AB96A7A00F292D2 /* multiplier2.wasm in Resources */,
@@ -415,6 +424,7 @@
 			files = (
 				CEB804582AFF81BF0063F091 /* RSAViewController.swift in Sources */,
 				CEB804562AFF81AF0063F091 /* KeccakZkeyViewController.swift in Sources */,
+				2AAD38B22B6CC318004F37BB /* FileDownloader.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				CEB804502AFF81960063F091 /* KeccakSetupViewController.swift in Sources */,
 				E6D848592B766C8C00DBAF30 /* ComplexZkeyViewController.swift in Sources */,

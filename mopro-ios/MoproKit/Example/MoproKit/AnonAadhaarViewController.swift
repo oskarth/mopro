@@ -11,6 +11,10 @@ import WebKit
 import MoproKit
 
 class AnonAadhaarViewController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate {
+
+    let url = URL(string: "https://mopro.vivianjeng.xyz/main_final.arkzkey")
+
+
     let webView = WKWebView()
     let moproCircom = MoproKit.MoproCircom()
     //var setupResult: SetupResult?
@@ -99,8 +103,12 @@ class AnonAadhaarViewController: UIViewController, WKScriptMessageHandler, WKNav
             // Record start time
             let start = CFAbsoluteTimeGetCurrent()
             
+            // Ark zkey url
+            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let destinationUrl = documentsUrl.appendingPathComponent((url!).lastPathComponent)
+            
             // Generate Proof
-            let generateProofResult = try generateProof2(circuitInputs: inputs)
+            let generateProofResult = try generateProof2(zkeyPath: destinationUrl.path, circuitInputs: inputs)
             assert(!generateProofResult.proof.isEmpty, "Proof should not be empty")
             //assert(Data(expectedOutput) == generateProofResult.inputs, "Circuit outputs mismatch the expected outputs")
             
@@ -177,14 +185,32 @@ class AnonAadhaarViewController: UIViewController, WKScriptMessageHandler, WKNav
             print("Proof has not been generated yet.")
             return
         }
+        
+        // Ark zkey url
+        let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let destinationUrl = documentsUrl.appendingPathComponent((url!).lastPathComponent)
+        
         do {
             // Verify Proof
-            let isValid = try verifyProof2(proof: proof, publicInput: publicInputs)
+            let isValid = try verifyProof2(zkeyPath: destinationUrl.path, proof: proof, publicInput: publicInputs)
             assert(isValid, "Proof verification should succeed")
 
             textView.text += "Proof verification succeeded.\n"
         } catch let error as MoproError {
             print("MoproError: \(error)")
+        } catch {
+            print("Unexpected error: \(error)")
+        }
+    }
+    
+    @objc func runDownloadAction() {
+        do {
+            let start = CFAbsoluteTimeGetCurrent()
+            FileDownloader.loadFileAsync(url: url!) { (path, error) in
+                print("Ark key File downloaded to : \(path!)")
+            }
+            let end = CFAbsoluteTimeGetCurrent()
+            print("Download ark key took:", end - start)
         } catch {
             print("Unexpected error: \(error)")
         }

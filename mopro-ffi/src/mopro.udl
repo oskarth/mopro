@@ -9,10 +9,10 @@ namespace mopro {
   void initialize_mopro_dylib(string dylib_path);
 
   [Throws=MoproError]
-  GenerateProofResult generate_proof2(record<string, sequence<string>> circuit_inputs);
+  GenerateProofResult generate_proof2(string zkey_path, record<string, sequence<string>> circuit_inputs);
 
   [Throws=MoproError]
-  boolean verify_proof2(bytes proof, bytes public_input);
+  boolean verify_proof2(string zkey_path, bytes proof, bytes public_input);
 
   [Throws=MoproError]
   BenchmarkResult run_msm_benchmark(u32? num_msm);
@@ -56,6 +56,7 @@ dictionary ProofCalldata {
 [Error]
 enum MoproError {
   "CircomError",
+  "IoError",
 };
 
 interface MoproCircom {
@@ -70,3 +71,17 @@ interface MoproCircom {
   [Throws=MoproError]
   boolean verify_proof(bytes proof, bytes public_input);
 };
+
+interface MoproCircom2 {
+  constructor();
+
+  [Throws=MoproError]
+  void initialize(string zkey_path);
+
+  [Throws=MoproError]
+  GenerateProofResult generate_proof(record<string, sequence<string>> circuit_inputs);
+
+  [Throws=MoproError]
+  boolean verify_proof(bytes proof, bytes public_input);
+};
+

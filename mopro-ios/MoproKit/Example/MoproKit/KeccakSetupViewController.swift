@@ -10,13 +10,15 @@ import UIKit
 import MoproKit
 
 class KeccakSetupViewController: UIViewController {
+    
+    let url = URL(string: "https://mopro.vivianjeng.xyz/keccak256_256_test_final.arkzkey")
 
     var setupButton = UIButton(type: .system)
     var proveButton = UIButton(type: .system)
     var verifyButton = UIButton(type: .system)
     var textView = UITextView()
 
-    let moproCircom = MoproKit.MoproCircom()
+    let moproCircom = MoproKit.MoproCircom2()
     var setupResult: SetupResult?
     var generatedProof: Data?
     var publicInputs: Data?
@@ -81,14 +83,19 @@ class KeccakSetupViewController: UIViewController {
     @objc func runSetupAction() {
         // Logic for setup
         if let wasmPath = Bundle.main.path(forResource: "keccak256_256_test", ofType: "wasm"),
-            let r1csPath = Bundle.main.path(forResource: "keccak256_256_test", ofType: "r1cs") {
+            let r1csPath = Bundle.main.path(forResource: "keccak256_256_test", ofType: "r1cs"),
+            let zkeyPath = Bundle.main.path(forResource: "keccak256_256_test_final", ofType: "arkzkey"){
 
        // Multiplier example
        // if let wasmPath = Bundle.main.path(forResource: "multiplier2", ofType: "wasm"),
        //    let r1csPath = Bundle.main.path(forResource: "multiplier2", ofType: "r1cs") {
 
            do {
-               setupResult = try moproCircom.setup(wasmPath: wasmPath, r1csPath: r1csPath)
+               // Ark zkey url
+               let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+               let destinationUrl = documentsUrl.appendingPathComponent((url!).lastPathComponent)
+               
+               try moproCircom.initialize(zkeyPath: destinationUrl.path)
                proveButton.isEnabled = true // Enable the Prove button upon successful setup
            } catch let error as MoproError {
                print("MoproError: \(error)")
@@ -102,10 +109,10 @@ class KeccakSetupViewController: UIViewController {
 
     @objc func runProveAction() {
         // Logic for prove
-       guard let setupResult = setupResult else {
-           print("Setup is not completed yet.")
-           return
-        }
+       // guard let setupResult = setupResult else {
+        //   print("Setup is not completed yet.")
+        //   return
+        // }
         do {
             // Prepare inputs
             let inputVec: [UInt8] = [
@@ -149,8 +156,8 @@ class KeccakSetupViewController: UIViewController {
 
     @objc func runVerifyAction() {
         // Logic for verify
-        guard let setupResult = setupResult,
-                let proof = generatedProof,
+        //guard let setupResult = setupResult,
+        guard let proof = generatedProof,
                 let publicInputs = publicInputs else {
             print("Setup is not completed or proof has not been generated yet.")
             return

@@ -65,6 +65,16 @@ impl From<mopro_core::MoproError> for FFIError {
     }
 }
 
+pub struct MoproCircom2 {
+    state: RwLock<circom::CircomState2>,
+}
+
+impl Default for MoproCircom2 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct MoproCircom {
     state: RwLock<circom::CircomState>,
 }
@@ -103,6 +113,7 @@ pub fn initialize_mopro_dylib(dylib_path: String) -> Result<(), MoproError> {
 }
 
 pub fn generate_proof2(
+    zkey_path: String,
     inputs: HashMap<String, Vec<String>>,
 ) -> Result<GenerateProofResult, MoproError> {
     // Convert inputs to BigInt
@@ -118,7 +129,7 @@ pub fn generate_proof2(
         })
         .collect();
 
-    let (proof, inputs) = circom::generate_proof2(bigint_inputs)?;
+    let (proof, inputs) = circom::generate_proof2(&zkey_path, bigint_inputs)?;
 
     let serialized_proof = circom::serialization::serialize_proof(&proof);
     let serialized_inputs = circom::serialization::serialize_inputs(&inputs);
@@ -128,10 +139,15 @@ pub fn generate_proof2(
     })
 }
 
-pub fn verify_proof2(proof: Vec<u8>, public_input: Vec<u8>) -> Result<bool, MoproError> {
+pub fn verify_proof2(
+    zkey_path: String,
+    proof: Vec<u8>,
+    public_input: Vec<u8>,
+) -> Result<bool, MoproError> {
     let deserialized_proof = circom::serialization::deserialize_proof(proof);
     let deserialized_public_input = circom::serialization::deserialize_inputs(public_input);
-    let is_valid = circom::verify_proof2(deserialized_proof, deserialized_public_input)?;
+    let is_valid =
+        circom::verify_proof2(&zkey_path, deserialized_proof, deserialized_public_input)?;
     Ok(is_valid)
 }
 
@@ -178,6 +194,57 @@ impl MoproCircom {
         Ok(SetupResult {
             provingKey: circom::serialization::serialize_proving_key(&pk),
         })
+    }
+
+    //             inputs: circom::serialization::serialize_inputs(&inputs),
+
+    pub fn generate_proof(
+        &self,
+        inputs: HashMap<String, Vec<String>>,
+    ) -> Result<GenerateProofResult, MoproError> {
+        let mut state_guard = self.state.write().unwrap();
+
+        // Convert inputs to BigInt
+        let bigint_inputs = inputs
+            .into_iter()
+            .map(|(k, v)| {
+                (
+                    k,
+                    v.into_iter()
+                        .map(|i| BigInt::from_str(&i).unwrap())
+                        .collect(),
+                )
+            })
+            .collect();
+
+        let (proof, inputs) = state_guard.generate_proof(bigint_inputs)?;
+
+        Ok(GenerateProofResult {
+            proof: circom::serialization::serialize_proof(&proof),
+            inputs: circom::serialization::serialize_inputs(&inputs),
+        })
+    }
+
+    pub fn verify_proof(&self, proof: Vec<u8>, public_input: Vec<u8>) -> Result<bool, MoproError> {
+        let state_guard = self.state.read().unwrap();
+        let deserialized_proof = circom::serialization::deserialize_proof(proof);
+        let deserialized_public_input = circom::serialization::deserialize_inputs(public_input);
+        let is_valid = state_guard.verify_proof(deserialized_proof, deserialized_public_input)?;
+        Ok(is_valid)
+    }
+}
+
+impl MoproCircom2 {
+    pub fn new() -> Self {
+        Self {
+            state: RwLock::new(circom::CircomState2::new()),
+        }
+    }
+
+    pub fn initialize(&self, zkey_path: String) -> Result<(), MoproError> {
+        let mut state_guard = self.state.write().unwrap();
+        state_guard.initialize(zkey_path.as_str())?;
+        Ok(())
     }
 
     //             inputs: circom::serialization::serialize_inputs(&inputs),

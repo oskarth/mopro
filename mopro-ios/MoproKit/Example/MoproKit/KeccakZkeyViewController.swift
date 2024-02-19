@@ -9,8 +9,12 @@
 import UIKit
 import MoproKit
 
+
 class KeccakZkeyViewController: UIViewController {
 
+    let url = URL(string: "https://mopro.vivianjeng.xyz/keccak256_256_test_final.arkzkey")
+    
+    var downloadButton = UIButton(type: .system)
     var initButton = UIButton(type: .system)
     var proveButton = UIButton(type: .system)
     var verifyButton = UIButton(type: .system)
@@ -37,26 +41,30 @@ class KeccakZkeyViewController: UIViewController {
     }
 
     func setupUI() {
+        downloadButton.setTitle("Download ZKey", for: .normal)
         initButton.setTitle("Init", for: .normal)
         proveButton.setTitle("Prove", for: .normal)
         verifyButton.setTitle("Verify", for: .normal)
 
         // Uncomment once init separate
         //proveButton.isEnabled = false
+        downloadButton.isEnabled = true
         proveButton.isEnabled = true
         verifyButton.isEnabled = false
         textView.isEditable = false
 
         // Setup actions for buttons
+        downloadButton.addTarget(self, action: #selector(runDownloadAction), for: .touchUpInside)
         initButton.addTarget(self, action: #selector(runInitAction), for: .touchUpInside)
         proveButton.addTarget(self, action: #selector(runProveAction), for: .touchUpInside)
         verifyButton.addTarget(self, action: #selector(runVerifyAction), for: .touchUpInside)
 
+       downloadButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
        initButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
        proveButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
        verifyButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
 
-        let stackView = UIStackView(arrangedSubviews: [initButton, proveButton, verifyButton, textView])
+        let stackView = UIStackView(arrangedSubviews: [downloadButton, initButton, proveButton, verifyButton, textView])
         stackView.axis = .vertical
         stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,9 +124,13 @@ class KeccakZkeyViewController: UIViewController {
 
             // Record start time
             let start = CFAbsoluteTimeGetCurrent()
+            
+            // Ark zkey url
+            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let destinationUrl = documentsUrl.appendingPathComponent((url!).lastPathComponent)
 
             // Generate Proof
-            let generateProofResult = try generateProof2(circuitInputs: inputs)
+            let generateProofResult = try generateProof2(zkeyPath: destinationUrl.path, circuitInputs: inputs)
             assert(!generateProofResult.proof.isEmpty, "Proof should not be empty")
             //assert(Data(expectedOutput) == generateProofResult.inputs, "Circuit outputs mismatch the expected outputs")
 
@@ -143,5 +155,19 @@ class KeccakZkeyViewController: UIViewController {
 
     @objc func runVerifyAction() {
         // Logic for verify
+        
+    }
+    
+    @objc func runDownloadAction() {
+        do {
+            let start = CFAbsoluteTimeGetCurrent()
+            FileDownloader.loadFileAsync(url: url!) { (path, error) in
+                print("Ark key File downloaded to : \(path!)")
+            }
+            let end = CFAbsoluteTimeGetCurrent()
+            print("Download ark key took:", end - start)
+        } catch {
+            print("Unexpected error: \(error)")
+        }
     }
 }

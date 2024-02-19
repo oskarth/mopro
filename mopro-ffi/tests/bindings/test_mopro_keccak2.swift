@@ -7,6 +7,7 @@ import mopro
 
 // let wasmPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_js/keccak256_256_test.wasm"
 // let r1csPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test.r1cs"
+let zkeyPath = "./../../../../mopro-core/examples/circom/keccak256/target/keccak256_256_test_final.arkzkey"
 
 // Helper function to convert bytes to bits
 func bytesToBits(bytes: [UInt8]) -> [String] {
@@ -68,7 +69,7 @@ do {
   let expectedOutput: [UInt8] = serializeOutputs(outputBits)
 
   // // Generate Proof
-  let generateProofResult = try generateProof2(circuitInputs: inputs)
+  let generateProofResult = try generateProof2(zkeyPath: zkeyPath, circuitInputs: inputs)
   // let generateProofResult = try moproCircom.generateProof(circuitInputs: inputs)
   assert(!generateProofResult.proof.isEmpty, "Proof should not be empty")
 
@@ -76,6 +77,7 @@ do {
   assert(Data(expectedOutput) == generateProofResult.inputs, "Circuit outputs mismatch the expected outputs")
 
   let isValid = try verifyProof2(
+    zkeyPath: zkeyPath,
     proof: generateProofResult.proof, publicInput: generateProofResult.inputs)
   assert(isValid, "Proof verification should succeed")
 

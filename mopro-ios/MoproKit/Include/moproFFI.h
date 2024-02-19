@@ -74,9 +74,20 @@ RustBuffer uniffi_mopro_ffi_fn_method_moprocircom_setup(void*_Nonnull ptr, RustB
 );
 int8_t uniffi_mopro_ffi_fn_method_moprocircom_verify_proof(void*_Nonnull ptr, RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
 );
+void uniffi_mopro_ffi_fn_free_moprocircom2(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+);
+void*_Nonnull uniffi_mopro_ffi_fn_constructor_moprocircom2_new(RustCallStatus *_Nonnull out_status
+    
+);
+RustBuffer uniffi_mopro_ffi_fn_method_moprocircom2_generate_proof(void*_Nonnull ptr, RustBuffer circuit_inputs, RustCallStatus *_Nonnull out_status
+);
+void uniffi_mopro_ffi_fn_method_moprocircom2_initialize(void*_Nonnull ptr, RustBuffer zkey_path, RustCallStatus *_Nonnull out_status
+);
+int8_t uniffi_mopro_ffi_fn_method_moprocircom2_verify_proof(void*_Nonnull ptr, RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
+);
 uint32_t uniffi_mopro_ffi_fn_func_add(uint32_t a, uint32_t b, RustCallStatus *_Nonnull out_status
 );
-RustBuffer uniffi_mopro_ffi_fn_func_generate_proof2(RustBuffer circuit_inputs, RustCallStatus *_Nonnull out_status
+RustBuffer uniffi_mopro_ffi_fn_func_generate_proof2(RustBuffer zkey_path, RustBuffer circuit_inputs, RustCallStatus *_Nonnull out_status
 );
 RustBuffer uniffi_mopro_ffi_fn_func_hello(RustCallStatus *_Nonnull out_status
     
@@ -92,7 +103,7 @@ RustBuffer uniffi_mopro_ffi_fn_func_to_ethereum_inputs(RustBuffer inputs, RustCa
 );
 RustBuffer uniffi_mopro_ffi_fn_func_to_ethereum_proof(RustBuffer proof, RustCallStatus *_Nonnull out_status
 );
-int8_t uniffi_mopro_ffi_fn_func_verify_proof2(RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
+int8_t uniffi_mopro_ffi_fn_func_verify_proof2(RustBuffer zkey_path, RustBuffer proof, RustBuffer public_input, RustCallStatus *_Nonnull out_status
 );
 RustBuffer ffi_mopro_ffi_rustbuffer_alloc(int32_t size, RustCallStatus *_Nonnull out_status
 );
@@ -244,7 +255,19 @@ uint16_t uniffi_mopro_ffi_checksum_method_moprocircom_setup(void
 uint16_t uniffi_mopro_ffi_checksum_method_moprocircom_verify_proof(void
     
 );
+uint16_t uniffi_mopro_ffi_checksum_method_moprocircom2_generate_proof(void
+    
+);
+uint16_t uniffi_mopro_ffi_checksum_method_moprocircom2_initialize(void
+    
+);
+uint16_t uniffi_mopro_ffi_checksum_method_moprocircom2_verify_proof(void
+    
+);
 uint16_t uniffi_mopro_ffi_checksum_constructor_moprocircom_new(void
+    
+);
+uint16_t uniffi_mopro_ffi_checksum_constructor_moprocircom2_new(void
     
 );
 uint32_t ffi_mopro_ffi_uniffi_contract_version(void

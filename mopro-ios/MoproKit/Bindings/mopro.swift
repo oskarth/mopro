@@ -505,6 +505,110 @@ public func FfiConverterTypeMoproCircom_lower(_ value: MoproCircom) -> UnsafeMut
 }
 
 
+public protocol MoproCircom2Protocol {
+    func generateProof(circuitInputs: [String: [String]])  throws -> GenerateProofResult
+    func initialize(zkeyPath: String)  throws
+    func verifyProof(proof: Data, publicInput: Data)  throws -> Bool
+    
+}
+
+public class MoproCircom2: MoproCircom2Protocol {
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+    public convenience init()  {
+        self.init(unsafeFromRawPointer: try! rustCall() {
+    uniffi_mopro_ffi_fn_constructor_moprocircom2_new($0)
+})
+    }
+
+    deinit {
+        try! rustCall { uniffi_mopro_ffi_fn_free_moprocircom2(pointer, $0) }
+    }
+
+    
+
+    
+    
+
+    public func generateProof(circuitInputs: [String: [String]]) throws -> GenerateProofResult {
+        return try  FfiConverterTypeGenerateProofResult.lift(
+            try 
+    rustCallWithError(FfiConverterTypeMoproError.lift) {
+    uniffi_mopro_ffi_fn_method_moprocircom2_generate_proof(self.pointer, 
+        FfiConverterDictionaryStringSequenceString.lower(circuitInputs),$0
+    )
+}
+        )
+    }
+
+    public func initialize(zkeyPath: String) throws {
+        try 
+    rustCallWithError(FfiConverterTypeMoproError.lift) {
+    uniffi_mopro_ffi_fn_method_moprocircom2_initialize(self.pointer, 
+        FfiConverterString.lower(zkeyPath),$0
+    )
+}
+    }
+
+    public func verifyProof(proof: Data, publicInput: Data) throws -> Bool {
+        return try  FfiConverterBool.lift(
+            try 
+    rustCallWithError(FfiConverterTypeMoproError.lift) {
+    uniffi_mopro_ffi_fn_method_moprocircom2_verify_proof(self.pointer, 
+        FfiConverterData.lower(proof),
+        FfiConverterData.lower(publicInput),$0
+    )
+}
+        )
+    }
+}
+
+public struct FfiConverterTypeMoproCircom2: FfiConverter {
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = MoproCircom2
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> MoproCircom2 {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: MoproCircom2, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> MoproCircom2 {
+        return MoproCircom2(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: MoproCircom2) -> UnsafeMutableRawPointer {
+        return value.pointer
+    }
+}
+
+
+public func FfiConverterTypeMoproCircom2_lift(_ pointer: UnsafeMutableRawPointer) throws -> MoproCircom2 {
+    return try FfiConverterTypeMoproCircom2.lift(pointer)
+}
+
+public func FfiConverterTypeMoproCircom2_lower(_ value: MoproCircom2) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeMoproCircom2.lower(value)
+}
+
+
 public struct BenchmarkResult {
     public var numMsm: UInt32
     public var avgProcessingTime: Double
@@ -857,6 +961,9 @@ public enum MoproError {
     // Simple error enums only carry a message
     case CircomError(message: String)
     
+    // Simple error enums only carry a message
+    case IoError(message: String)
+    
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeMoproError.lift(error)
@@ -878,6 +985,10 @@ public struct FfiConverterTypeMoproError: FfiConverterRustBuffer {
             message: try FfiConverterString.read(from: &buf)
         )
         
+        case 2: return .IoError(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -891,6 +1002,8 @@ public struct FfiConverterTypeMoproError: FfiConverterRustBuffer {
         
         case .CircomError(_ /* message is ignored*/):
             writeInt(&buf, Int32(1))
+        case .IoError(_ /* message is ignored*/):
+            writeInt(&buf, Int32(2))
 
         
         }
@@ -978,10 +1091,11 @@ public func add(a: UInt32, b: UInt32)  -> UInt32 {
     )
 }
 
-public func generateProof2(circuitInputs: [String: [String]]) throws -> GenerateProofResult {
+public func generateProof2(zkeyPath: String, circuitInputs: [String: [String]]) throws -> GenerateProofResult {
     return try  FfiConverterTypeGenerateProofResult.lift(
         try rustCallWithError(FfiConverterTypeMoproError.lift) {
     uniffi_mopro_ffi_fn_func_generate_proof2(
+        FfiConverterString.lower(zkeyPath),
         FfiConverterDictionaryStringSequenceString.lower(circuitInputs),$0)
 }
     )
@@ -1039,10 +1153,11 @@ public func toEthereumProof(proof: Data)  -> ProofCalldata {
     )
 }
 
-public func verifyProof2(proof: Data, publicInput: Data) throws -> Bool {
+public func verifyProof2(zkeyPath: String, proof: Data, publicInput: Data) throws -> Bool {
     return try  FfiConverterBool.lift(
         try rustCallWithError(FfiConverterTypeMoproError.lift) {
     uniffi_mopro_ffi_fn_func_verify_proof2(
+        FfiConverterString.lower(zkeyPath),
         FfiConverterData.lower(proof),
         FfiConverterData.lower(publicInput),$0)
 }
@@ -1067,7 +1182,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_mopro_ffi_checksum_func_add() != 8411) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_ffi_checksum_func_generate_proof2() != 40187) {
+    if (uniffi_mopro_ffi_checksum_func_generate_proof2() != 37475) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_mopro_ffi_checksum_func_hello() != 46136) {
@@ -1088,7 +1203,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_mopro_ffi_checksum_func_to_ethereum_proof() != 60110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_mopro_ffi_checksum_func_verify_proof2() != 37192) {
+    if (uniffi_mopro_ffi_checksum_func_verify_proof2() != 30573) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_mopro_ffi_checksum_method_moprocircom_generate_proof() != 64602) {
@@ -1100,7 +1215,19 @@ private var initializationResult: InitializationResult {
     if (uniffi_mopro_ffi_checksum_method_moprocircom_verify_proof() != 61522) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_mopro_ffi_checksum_method_moprocircom2_generate_proof() != 28879) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_mopro_ffi_checksum_method_moprocircom2_initialize() != 11891) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_mopro_ffi_checksum_method_moprocircom2_verify_proof() != 626) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_mopro_ffi_checksum_constructor_moprocircom_new() != 42205) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_mopro_ffi_checksum_constructor_moprocircom2_new() != 20845) {
         return InitializationResult.apiChecksumMismatch
     }
 
