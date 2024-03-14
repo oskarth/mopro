@@ -16,4 +16,4 @@ DIR="$1"
 CIRCUIT="$2"
 
 mkdir -p ${DIR}/target
-circom ./${DIR}/${CIRCUIT} --r1cs --wasm --sym --output ./${DIR}/target
+circom ./${DIR}/${CIRCUIT} --O0 --r1cs --wasm --sym --output ./${DIR}/target

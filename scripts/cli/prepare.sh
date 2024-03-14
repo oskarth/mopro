@@ -89,7 +89,7 @@ compile_circuit() {
     mkdir -p "$OUTPUT_DIR"
 
     # Compile the circuit using circom
-    circom "$circuit_file_path" --r1cs --wasm --sym --output "$OUTPUT_DIR"
+    circom "$circuit_file_path" --O0 --r1cs --wasm --sym --output "$OUTPUT_DIR"
 }
 
 # Trusted setup for the circuit
