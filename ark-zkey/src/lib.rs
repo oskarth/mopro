@@ -11,19 +11,52 @@ use memmap2::Mmap;
 use std::fs::File;
 //use std::io::Cursor;
 //use std::io::{Read,self};
+use rkyv::{archived_root, Infallible};
+use rkyv::{Archive, Deserialize, Serialize};
 use std::io::BufReader;
 use std::path::PathBuf;
 use std::time::Instant;
 
-#[derive(CanonicalSerialize, CanonicalDeserialize, Clone, Debug, PartialEq)]
+// NOTE: Archive, Serialize, Deserialize traits are for rkyv zero-copy deserialization experiment
+// See https://github.com/oskarth/mopro/issues/25
+
+// XXX: the trait `Archive` is not implemented for `ProvingKey<ark_ec::models::bn::Bn<ark_bn254::Config>>`
+#[derive(
+    Archive,
+    Serialize,
+    Deserialize,
+    CanonicalSerialize,
+    CanonicalDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+)]
 pub struct SerializableProvingKey(pub ProvingKey<Bn254>);
 
-#[derive(CanonicalSerialize, CanonicalDeserialize, Clone, Debug, PartialEq)]
+#[derive(
+    Archive,
+    Serialize,
+    Deserialize,
+    CanonicalSerialize,
+    CanonicalDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+)]
 pub struct SerializableMatrix<F: Field> {
     pub data: Vec<Vec<(F, usize)>>,
 }
 
-#[derive(CanonicalSerialize, CanonicalDeserialize, Clone, Debug, PartialEq)]
+#[derive(
+    Archive,
+    Serialize,
+    Deserialize,
+    CanonicalSerialize,
+    CanonicalDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+)]
 pub struct SerializableConstraintMatrices<F: Field> {
     pub num_instance_variables: usize,
     pub num_witness_variables: usize,
@@ -137,6 +170,23 @@ pub fn read_arkzkey_from_bytes(
     Ok((proving_key, constraint_matrices))
 }
 
+// Function to read the arkzkey file using rkyv for zero-copy deserialization
+pub fn read_arkzkey_with_rkyv(
+    arkzkey_path: &str,
+) -> Result<(ProvingKey<Bn254>, ConstraintMatrices<Fr>), Box<dyn std::error::Error>> {
+    let arkzkey_file_path = PathBuf::from(arkzkey_path);
+    let arkzkey_file = File::open(arkzkey_file_path)?;
+
+    // Using mmap for zero-copy deserialization
+    let mmap = unsafe { Mmap::map(&arkzkey_file)? };
+    let archived_data = unsafe { archived_root::<SerializableConstraintMatrices<Fr>>(&mmap[..]) };
+
+    // Optionally deserialize if you need to manipulate the data
+    let constraint_matrices: ConstraintMatrices<Fr> = archived_data.deserialize(&mut Infallible)?;
+
+    Ok((archived_data.0, constraint_matrices))
+}
+
 pub fn read_proving_key_and_matrices_from_zkey(
     zkey_path: &str,
 ) -> Result<(SerializableProvingKey, SerializableConstraintMatrices<Fr>)> {
@@ -241,6 +291,48 @@ mod tests {
             };
         assert_eq!(
             original_deserialized_constraint_matrices, deserialized_constraint_matrices,
+            "Original and deserialized constraint matrices do not match"
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_rkyv_serialization_deserialization() -> Result<(), Box<dyn std::error::Error>> {
+        let zkey_path =
+            "../mopro-core/examples/circom/keccak256/target/keccak256_256_test_final.zkey";
+        let arkzkey_path = zkey_path.replace(".zkey", ".arkzkey");
+
+        // Assuming `read_proving_key_and_matrices_from_zkey` reads the original data
+        let (original_proving_key, original_constraint_matrices) =
+            read_proving_key_and_matrices_from_zkey(zkey_path)?;
+
+        // Convert to arkzkey if necessary
+        // Assuming `convert_zkey` serializes the data into the arkzkey format
+        println!("[build] Writing arkzkey to: {}", arkzkey_path);
+        let now = Instant::now();
+        convert_zkey(
+            original_proving_key.clone(),
+            original_constraint_matrices.clone(),
+            &arkzkey_path,
+        )?;
+        println!("[build] Time to write arkzkey: {:?}", now.elapsed());
+
+        // Read the arkzkey using the rkyv-based function
+        println!("Reading arkzkey with rkyv from: {}", arkzkey_path);
+        let now = Instant::now();
+        let (deserialized_proving_key, deserialized_constraint_matrices) =
+            read_arkzkey_with_rkyv(&arkzkey_path)?;
+        println!("Time to read arkzkey with rkyv: {:?}", now.elapsed());
+
+        // Compare the original and deserialized data
+        assert_eq!(
+            original_proving_key, deserialized_proving_key,
+            "Original and deserialized proving keys do not match"
+        );
+
+        assert_eq!(
+            original_constraint_matrices, deserialized_constraint_matrices,
             "Original and deserialized constraint matrices do not match"
         );
 

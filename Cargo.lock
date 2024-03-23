@@ -326,6 +326,7 @@ dependencies = [
  "flame",
  "flamer",
  "memmap2 0.9.4",
+ "rkyv",
 ]
 
 [[package]]
