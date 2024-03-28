@@ -52,3 +52,19 @@ Experimental support for significantly faster zkey loading. See `../ark-zkey` RE
 `cargo run --release --features gpu-benchmarks --package mopro-core --bin generate_benchmark_report`
 
 The report will be in `mopro-core/benchmarks/gpu_explorations/msm_bench_rust_laptop.csv`.
+
+## To use [circom-witness-rs](https://github.com/philsippl/circom-witness-rs) (Experimental)
+- Set
+  ```toml
+  [witness]
+  use_witness = true
+  ```
+  in `config.toml` file
+- Or build witness with
+  ```sh
+  WITNESS_CPP=<CIRCOM_PATH> cargo build --features build-native-witness --release
+  ```
+  Test with
+  ```sh
+  cargo test --features calc-native-witness
+  ```

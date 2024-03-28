@@ -32,46 +32,57 @@ echo "Using configuration file: $CONFIG_FILE"
 # Read configurations from TOML file within [build] block
 DEVICE_TYPE=$(read_toml "$CONFIG_FILE" "build.ios_device_type")
 BUILD_MODE=$(read_toml "$CONFIG_FILE" "build.build_mode")
+USE_CIRCOM_WITNESS_RS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
+CIRCUIT_DIR=$(read_toml "$CONFIG_FILE" "circuit.dir")
+CIRCUIT_NAME=$(read_toml "$CONFIG_FILE" "circuit.name")
 
 # Determine the architecture based on device type
 case $DEVICE_TYPE in
     "x86_64")
         ARCHITECTURE="x86_64-apple-ios"
-        ;;
+    ;;
     "simulator")
         ARCHITECTURE="aarch64-apple-ios-sim"
-        ;;
+    ;;
     "device")
         ARCHITECTURE="aarch64-apple-ios"
-        ;;
+    ;;
     *)
         echo -e "\n${RED}Error: Invalid device type specified in config: $DEVICE_TYPE${DEFAULT}"
         exit 1
-        ;;
+    ;;
 esac
 
 # Determine the library directory based on build mode
 case $BUILD_MODE in
     "debug")
         LIB_DIR="debug"
-        ;;
+    ;;
     "release")
         LIB_DIR="release"
-        ;;
+    ;;
     *)
         echo -e "\n${RED}Error: Invalid build mode specified in config: $BUILD_MODE${DEFAULT}"
         exit 1
-        ;;
+    ;;
 esac
 
 PROJECT_DIR=$(pwd)
 
 # Build circom circuits in mopro-core
 cd "${PROJECT_DIR}/mopro-core"
+if [[ "$USE_CIRCOM_WITNESS_RS" == true ]]; then
+    COMMAND="--features build-native-witness"
+    WITNESS_CPP="$PROJECT_DIR/$CIRCUIT_DIR/$CIRCUIT_NAME.circom"
+else
+    COMMAND=""
+    WITNESS_CPP=""
+fi
+
 if [[ "$BUILD_MODE" == "debug" ]]; then
-    cargo build
+    WITNESS_CPP=${WITNESS_CPP} cargo build ${COMMAND}
     elif [[ "$BUILD_MODE" == "release" ]]; then
-    cargo build --release
+    WITNESS_CPP=${WITNESS_CPP} cargo build ${COMMAND} --release
 fi
 
 # Build MoproKit pods

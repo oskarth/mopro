@@ -32,29 +32,30 @@ echo "Using configuration file: $CONFIG_FILE"
 # Read configurations from TOML file within [build] block
 DEVICE_TYPE=$(read_toml "$CONFIG_FILE" "build.android_device_type")
 BUILD_MODE=$(read_toml "$CONFIG_FILE" "build.build_mode")
+USE_CIRCOM_WITNESS_RS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
 
 # Determine the architecture and folder based on device type
 case $DEVICE_TYPE in
     "x86_64")
         ARCHITECTURE="x86_64-linux-android"
         FOLDER="x86_64"
-        ;;
+    ;;
     "x86")
         ARCHITECTURE="i686-linux-android"
         FOLDER="x86"
-        ;;
+    ;;
     "arm")
         ARCHITECTURE="armv7-linux-androideabi"
         FOLDER="armeabi-v7a"
-        ;;
+    ;;
     "arm64")
         ARCHITECTURE="aarch64-linux-android"
         FOLDER="arm64-v8a"
-        ;;
+    ;;
     *)
         echo -e "${RED}Error: Invalid device type specified in config: $DEVICE_TYPE${DEFAULT}"
         exit 1
-        ;;
+    ;;
 esac
 
 # Determine the library directory and build command based on build mode
@@ -62,16 +63,22 @@ case $BUILD_MODE in
     "debug")
         LIB_DIR="debug"
         COMMAND=""
-        ;;
+    ;;
     "release")
         LIB_DIR="release"
         COMMAND="--release"
-        ;;
+    ;;
     *)
         echo -e "${RED}Error: Invalid build mode specified in config: $BUILD_MODE${DEFAULT}"
         exit 1
-        ;;
+    ;;
 esac
+
+if [[ "$USE_CIRCOM_WITNESS_RS" == true ]]; then
+    WITNESS="--features calc-native-witness"
+else
+    WITNESS=""
+fi
 
 PROJECT_DIR=$(pwd)
 
@@ -85,7 +92,7 @@ print_action "Using $ARCHITECTURE libmopro_ffi.a ($LIB_DIR) static library..."
 print_warning "This only works on $FOLDER devices!"
 
 print_action "[android] Build target in $BUILD_MODE mode"
-cargo ndk -t ${ARCHITECTURE} build --lib ${COMMAND} 
+cargo ndk -t ${ARCHITECTURE} build --lib ${COMMAND} ${WITNESS}
 
 print_action "[android] Copy files in mopro-android/Example/jniLibs/"
 for binary in ${PROJECT_DIR}/target/*/*/libmopro_ffi.so; do file $binary; done

@@ -70,7 +70,6 @@ download_files() {
     fi
     
 }
-
 # TODO: Comment out compile_circuit stuff again once zkey is integrated and we don't need r1cs file anymore
 
 # NOTE: On CI instead of compiling circuits and running trusted setup

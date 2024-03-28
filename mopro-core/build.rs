@@ -153,6 +153,21 @@ fn build_dylib(config: &Config) -> Result<()> {
     Ok(())
 }
 
+#[cfg(feature = "build-native-witness")]
+fn build_witness_graph() -> Result<()> {
+    let _ = witness::generate::build_witness();
+    let witness_cpp = env::var("WITNESS_CPP").expect("WITNESS_CPP is not set");
+    let circuit_file = Path::new(&witness_cpp);
+    let circuit_name = circuit_file.file_stem().unwrap().to_str().unwrap();
+    let circuit_directory = circuit_file.parent().unwrap();
+    println!("cargo:warning=WITNESS_CPP: {}", witness_cpp);
+    let graph_path = circuit_directory
+        .join("target")
+        .join(format!("{}.bin", circuit_name));
+    fs::copy("graph.bin", &graph_path).expect("Failed to copy graph.bin");
+    Ok(())
+}
+
 /// Builds the circuit based on the provided configuration.
 ///
 /// This function assumes that the necessary steps to build the circuit
@@ -183,6 +198,19 @@ fn build_circuit(config: &Config) -> Result<()> {
     let wasm_path =
         circuit_dir_path.join(format!("target/{}_js/{}.wasm", circuit_name, circuit_name));
     let arkzkey_path = circuit_dir_path.join(format!("target/{}_final.arkzkey", circuit_name));
+    #[cfg(feature = "calc-native-witness")]
+    {
+        let graph_path = circuit_dir_path.join(format!("target/{}.bin", circuit_name));
+
+        println!(
+            "cargo:warning=BUILD_RS_GRAPH_FILE: {}",
+            graph_path.display()
+        );
+        println!(
+            "cargo:rustc-env=BUILD_RS_GRAPH_FILE={}",
+            graph_path.display()
+        );
+    }
 
     // Ensure the required files exist
     if !zkey_path.exists() || !wasm_path.exists() || !arkzkey_path.exists() {
@@ -214,6 +242,8 @@ fn main() -> color_eyre::eyre::Result<()> {
     println!("cargo:warning=Preparing circuits...");
 
     let config = read_config()?;
+    #[cfg(feature = "build-native-witness")]
+    build_witness_graph()?;
     build_circuit(&config)?;
     build_dylib(&config)?;
     println!("cargo:warning=Successfully prepared circuits.");

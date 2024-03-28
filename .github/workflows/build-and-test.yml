@@ -11,12 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Check ark-zkey formatting
-        run: cd ark-zkey/ && cargo fmt --all -- --check
-      - name: Check mopro-core formatting
-        run: cd mopro-core/ && cargo fmt --all -- --check
-      - name: Check mopro-ffi formatting
-        run: cd mopro-ffi/ && cargo fmt --all -- --check
+      - name: Check formatting
+        run: cargo fmt --all -- --check
 
   test-ios:
     runs-on: macos-latest

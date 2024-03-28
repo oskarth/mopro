@@ -7,8 +7,10 @@ edition = "2021"
 
 [features]
 default = ["wasmer/dylib"]
-dylib = []                 # NOTE: can probably remove this if we use env config instead
+dylib = []                  # NOTE: can probably remove this if we use env config instead
 gpu-benchmarks = []
+calc-native-witness = ["witness"] # experimental feature to calculate witness with witness graph
+build-native-witness = ["witness"] # only enable build-native-witness feature when building the witness graph
 
 [dependencies]
 ark-circom = { git = "https://github.com/arkworks-rs/circom-compat.git" }
@@ -21,6 +23,7 @@ num-bigint = { version = "=0.4.3", default-features = false, features = [
 instant = "0.1"
 wasmer = { git = "https://github.com/oskarth/wasmer.git", rev = "09c7070" }
 once_cell = "1.8"
+ruint = { version = "1.10.0", features = ["rand", "serde", "ark-ff-04"] }
 
 # ZKP generation
 ark-ec = { version = "=0.4.1", default-features = false, features = [
@@ -36,6 +39,7 @@ ark-groth16 = { version = "=0.4.0", default-features = false, features = [
 ] }
 ark-relations = { version = "0.4", default-features = false }
 ark-zkey = { path = "../ark-zkey" }
+witness = { git = "https://github.com/philsippl/circom-witness-rs.git", optional = true}
 
 # Error handling
 thiserror = "=1.0.39"
@@ -49,6 +53,7 @@ wasmer = { git = "https://github.com/oskarth/wasmer.git", rev = "09c7070" }
 toml = "0.8"
 serde = "1.0"
 serde_derive = "1.0"
+witness = { git = "https://github.com/philsippl/circom-witness-rs.git", features = ["build-native-witness"], optional = true}
 
 [[bin]]
 name = "generate_benchmark_report"

@@ -58,3 +58,13 @@ To test bindings in release mode without warning:
 The above report was conducted on an M1 Pro MacBook Pro.
 
 For more information, read this report we have completed, which compares the time performance of MSM running in rust and swift.
+
+## To use [circom-witness-rs](https://github.com/philsippl/circom-witness-rs) (Experimental)
+1. Comment `default=[]` and uncomment `default = ["calc-native-witness"]` to enable `calc-native-witness` feature flag
+2. Test with
+   ```sh
+   # Run all tests
+   cargo test --features calc-native-witness
+   # Run bindings tests
+   cargo test --test test_generated_bindings --features calc-native-witness
+   ```
