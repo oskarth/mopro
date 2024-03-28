@@ -13,6 +13,9 @@
 		CE259EC92B99CCB60035CC36 /* mopro.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE259EC82B99CCB60035CC36 /* mopro.swift */; };
 		CE259ECB2B99DF5D0035CC36 /* mopro.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE259EC82B99CCB60035CC36 /* mopro.swift */; };
 		CE259ECC2B99DF5E0035CC36 /* mopro.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE259EC82B99CCB60035CC36 /* mopro.swift */; };
+		CE45119C2BA04476008067FC /* CircuitBindings.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45119A2BA04476008067FC /* CircuitBindings.xcframework */; };
+		CE45119D2BA04476008067FC /* CircuitBindings.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE45119A2BA04476008067FC /* CircuitBindings.xcframework */; };
+		CE4511A22BA04573008067FC /* CircuitBindings.xcframework in Embed Circuit */ = {isa = PBXBuildFile; fileRef = CE4511A12BA04573008067FC /* CircuitBindings.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEBBB4072B9C1974007305CF /* MultiplierCircuitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBB4062B9C1974007305CF /* MultiplierCircuitView.swift */; };
 		CEBBB4092B9C1A36007305CF /* KeccakCircuitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBB4082B9C1A36007305CF /* KeccakCircuitView.swift */; };
 		CEBBB40B2B9C1BE5007305CF /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEBBB40A2B9C1BE5007305CF /* Utils.swift */; };
@@ -42,6 +45,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CE4511A02BA044F3008067FC /* Embed Circuit */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CE4511A22BA04573008067FC /* CircuitBindings.xcframework in Embed Circuit */,
+			);
+			name = "Embed Circuit";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2B295895D9D651ADC8A3FD53 /* Pods-ExampleAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleAppTests.release.xcconfig"; path = "Target Support Files/Pods-ExampleAppTests/Pods-ExampleAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		34902FC9EAE055F0B5C523BE /* Pods-ExampleApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleApp.debug.xcconfig"; path = "Target Support Files/Pods-ExampleApp/Pods-ExampleApp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -53,6 +70,8 @@
 		C54051D9C0E3A7517C109F23 /* Pods-ExampleApp-ExampleAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleApp-ExampleAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-ExampleApp-ExampleAppUITests/Pods-ExampleApp-ExampleAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CE259EC32B99C4000035CC36 /* MoproBindings.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MoproBindings.xcframework; path = Frameworks/MoproBindings.xcframework; sourceTree = "<group>"; };
 		CE259EC82B99CCB60035CC36 /* mopro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = mopro.swift; path = Bindings/mopro.swift; sourceTree = SOURCE_ROOT; };
+		CE45119A2BA04476008067FC /* CircuitBindings.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CircuitBindings.xcframework; path = Frameworks/CircuitBindings.xcframework; sourceTree = "<group>"; };
+		CE4511A12BA04573008067FC /* CircuitBindings.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CircuitBindings.xcframework; path = Frameworks/CircuitBindings.xcframework; sourceTree = "<group>"; };
 		CEBBB4062B9C1974007305CF /* MultiplierCircuitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplierCircuitView.swift; sourceTree = "<group>"; };
 		CEBBB4082B9C1A36007305CF /* KeccakCircuitView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeccakCircuitView.swift; sourceTree = "<group>"; };
 		CEBBB40A2B9C1BE5007305CF /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -83,6 +102,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EC49437C8CB5BF3409BC87C /* Pods_ExampleAppTests.framework in Frameworks */,
+				CE45119C2BA04476008067FC /* CircuitBindings.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5AFEF211D91E79BC9BA7BCBC /* Pods_ExampleApp_ExampleAppUITests.framework in Frameworks */,
+				CE45119D2BA04476008067FC /* CircuitBindings.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +142,7 @@
 		CEF891182B9834BB0033AE93 = {
 			isa = PBXGroup;
 			children = (
+				CE4511A12BA04573008067FC /* CircuitBindings.xcframework */,
 				CE259ECA2B99DEED0035CC36 /* Bindings */,
 				CEF891232B9834BB0033AE93 /* ExampleApp */,
 				CEF891342B9834BC0033AE93 /* ExampleAppTests */,
@@ -183,6 +205,7 @@
 		F961E5704F1974723EA6F02C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE45119A2BA04476008067FC /* CircuitBindings.xcframework */,
 				CE259EC32B99C4000035CC36 /* MoproBindings.xcframework */,
 				72C8A7A95288D49E1FC887A7 /* Pods_ExampleApp.framework */,
 				3EEEC28F7FAAB743796D5BC0 /* Pods_ExampleApp_ExampleAppUITests.framework */,
@@ -202,6 +225,7 @@
 				CEF8911D2B9834BB0033AE93 /* Sources */,
 				CEF8911E2B9834BB0033AE93 /* Frameworks */,
 				CEF8911F2B9834BB0033AE93 /* Resources */,
+				CE4511A02BA044F3008067FC /* Embed Circuit */,
 			);
 			buildRules = (
 			);

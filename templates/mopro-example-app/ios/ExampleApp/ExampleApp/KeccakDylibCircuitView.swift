@@ -42,7 +42,6 @@ struct KeccakDylibCircuitView: View {
 
 extension KeccakDylibCircuitView {
     func runInitAction() {
-        if let frameworksPath = Bundle.main.privateFrameworksPath {
             textViewText += "Initializing library... "
             Task {
                 do {
@@ -66,7 +65,6 @@ extension KeccakDylibCircuitView {
                 } catch {
                     textViewText += "\nInitialization failed: \(error.localizedDescription)\n"
                 }
-            }
         }
     }
 

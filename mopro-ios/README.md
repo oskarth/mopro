@@ -59,3 +59,10 @@ There are two ways to run tests for the example app:
    * `simulator`: running on the simulator (default)
    * `device`: running on a real IOS device
 4. Open `MoproKit/Example/MoproKit.xcworkspace` in Xcode and `cmd + R` for building
+
+## Dylib support
+
+When building for real devices on iOS we have to convert the `wasm` witness generation file to a `dylib`.
+When doing so, set the `use_dylib` flag to true in `mopro-config.toml`.
+
+After building, make sure to Embed Circuit under Build Phases. Add `CircuitBindings.xcframework` to the "Embed Circuit" phase under ExampleApp -> Build Phases.

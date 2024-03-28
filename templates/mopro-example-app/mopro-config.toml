@@ -2,7 +2,7 @@
 
 [build]
 # For iOS device_type can be x86_64, simulator, device
-ios_device_type = "simulator" # Options: x86_64, simulator, device
+ios_device_type = "device" # Options: x86_64, simulator, device
 # For Android device_type can be x86_64, x86, arm, arm64
 android_device_type = "arm64" # Options: x86_64, x86, arm, arm64
 
@@ -12,17 +12,17 @@ build_mode = "release" # Options: debug, release
 
 [circuit]
 # multiplier2
-dir = "core/circuits/multiplier2"
-name = "multiplier2"
-ptau = "02"                       # ptau to use for trusted setup of circuit, "01" to "27"
+# dir = "core/circuits/multiplier2"
+# name = "multiplier2"
+# ptau = "02"                       # ptau to use for trusted setup of circuit, "01" to "27"
 
 # keccak256
-#dir = "core/circuits/keccak256"
-#name = "keccak256_256_test"
-#ptau = "19"
+dir = "core/circuits/keccak256"
+name = "keccak256_256_test"
+ptau = "19"
 
 [dylib]
-# NOTE: Dylib support is experimental and requires some fiddling in iOS
-# See https://github.com/oskarth/mopro/pull/37 and https://github.com/oskarth/mopro/pull/38
-use_dylib = false        # Options: true, false
-name = "keccak256.dylib" # Name of the dylib file, only used if use_dylib is true
+# NOTE: Dylib support is experimental may require some fiddling in iOS
+# It is currently only supported for real devices on iOS
+use_dylib = true   # Options: true, false
+name = "keccak256" # Name of the dylib file, only used if use_dylib is true
