@@ -32,7 +32,7 @@ echo "Using configuration file: $CONFIG_FILE"
 # Read configurations from TOML file within [build] block
 DEVICE_TYPE=$(read_toml "$CONFIG_FILE" "build.android_device_type")
 BUILD_MODE=$(read_toml "$CONFIG_FILE" "build.build_mode")
-USE_WITNESS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
+USE_CIRCOM_WITNESS_RS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
 
 # Determine the architecture and folder based on device type
 case $DEVICE_TYPE in
@@ -74,8 +74,8 @@ case $BUILD_MODE in
     ;;
 esac
 
-if [[ "$USE_WITNESS" == true ]]; then
-    WITNESS="--features calc-witness"
+if [[ "$USE_CIRCOM_WITNESS_RS" == true ]]; then
+    WITNESS="--features calc-native-witness"
 else
     WITNESS=""
 fi

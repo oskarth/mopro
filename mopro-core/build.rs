@@ -153,7 +153,7 @@ fn build_dylib(config: &Config) -> Result<()> {
     Ok(())
 }
 
-#[cfg(feature = "build-witness")]
+#[cfg(feature = "build-native-witness")]
 fn build_witness_graph() -> Result<()> {
     let _ = witness::generate::build_witness();
     let witness_cpp = env::var("WITNESS_CPP").expect("WITNESS_CPP is not set");
@@ -198,7 +198,7 @@ fn build_circuit(config: &Config) -> Result<()> {
     let wasm_path =
         circuit_dir_path.join(format!("target/{}_js/{}.wasm", circuit_name, circuit_name));
     let arkzkey_path = circuit_dir_path.join(format!("target/{}_final.arkzkey", circuit_name));
-    #[cfg(feature = "calc-witness")]
+    #[cfg(feature = "calc-native-witness")]
     {
         let graph_path = circuit_dir_path.join(format!("target/{}.bin", circuit_name));
 
@@ -242,7 +242,7 @@ fn main() -> color_eyre::eyre::Result<()> {
     println!("cargo:warning=Preparing circuits...");
 
     let config = read_config()?;
-    #[cfg(feature = "build-witness")]
+    #[cfg(feature = "build-native-witness")]
     build_witness_graph()?;
     build_circuit(&config)?;
     build_dylib(&config)?;

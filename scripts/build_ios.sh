@@ -32,7 +32,7 @@ echo "Using configuration file: $CONFIG_FILE"
 # Read configurations from TOML file within [build] block
 DEVICE_TYPE=$(read_toml "$CONFIG_FILE" "build.ios_device_type")
 BUILD_MODE=$(read_toml "$CONFIG_FILE" "build.build_mode")
-USE_WITNESS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
+USE_CIRCOM_WITNESS_RS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
 CIRCUIT_DIR=$(read_toml "$CONFIG_FILE" "circuit.dir")
 CIRCUIT_NAME=$(read_toml "$CONFIG_FILE" "circuit.name")
 
@@ -71,8 +71,8 @@ PROJECT_DIR=$(pwd)
 
 # Build circom circuits in mopro-core
 cd "${PROJECT_DIR}/mopro-core"
-if [[ "$USE_WITNESS" == true ]]; then
-    COMMAND="--features build-witness"
+if [[ "$USE_CIRCOM_WITNESS_RS" == true ]]; then
+    COMMAND="--features build-native-witness"
     WITNESS_CPP="$PROJECT_DIR/$CIRCUIT_DIR/$CIRCUIT_NAME.circom"
 else
     COMMAND=""

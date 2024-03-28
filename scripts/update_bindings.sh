@@ -39,7 +39,7 @@ DEVICE_TYPE=$(read_toml "$CONFIG_FILE" "build.ios_device_type")
 BUILD_MODE=$(read_toml "$CONFIG_FILE" "build.build_mode")
 USE_DYLIB=$(read_toml "$CONFIG_FILE" "dylib.use_dylib")
 DYLIB_NAME=$(read_toml "$CONFIG_FILE" "dylib.name")
-USE_WITNESS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
+USE_CIRCOM_WITNESS_RS=$(read_toml "$CONFIG_FILE" "witness.use_witness")
 
 # Assert we're in the project root
 if [[ ! -d "mopro-ffi" || ! -d "mopro-core" || ! -d "mopro-ios" ]]; then
@@ -86,8 +86,8 @@ if [[ "$USE_DYLIB" == true ]]; then
     fi
 fi
 
-if [[ "$USE_WITNESS" == true ]]; then
-    WITNESS="--features calc-witness"
+if [[ "$USE_CIRCOM_WITNESS_RS" == true ]]; then
+    WITNESS="--features calc-native-witness"
 else
     WITNESS=""
 fi
