@@ -196,22 +196,11 @@ create_xcframework_mopro() {
 # This is done to comply with Apple's requirements for iOS apps.
 # This currently only works on real devices.
 create_xcframework_circuit() {
-    print_action "Cleaning up existing CircuitBindings XCFramework..."
-    CIRCUIT_XCFRAMEWORK_PATH="${IOS_APP_DIR}/Frameworks/CircuitBindings.xcframework"
+    print_action "Cleaning up existing CircuitBindings Framework..."
+    CIRCUIT_FRAMEWORK_PATH="${IOS_APP_DIR}/Frameworks/CircuitBindings.framework"
 
-    # Clean up any existing CircuitBindings XCFramework
-    if [ -d "$CIRCUIT_XCFRAMEWORK_PATH" ]; then
-        rm -rf "$CIRCUIT_XCFRAMEWORK_PATH"
-    fi
-
-    print_action "Creating XCFramework for CircuitBindings dylib... (${ARCHITECTURE})"
-    xcodebuild -create-xcframework \
-        -library "${TARGET_DIR}/${ARCHITECTURE}/release/${DYLIB_NAME}.dylib" \
-        -output "$CIRCUIT_XCFRAMEWORK_PATH"
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}Failed to create CircuitBindings XCFramework.${DEFAULT}"
-        exit 1
-    fi
+    print_action "Creating Framework for CircuitBindings dylib... (${ARCHITECTURE})"
+    mv "${TARGET_DIR}/${ARCHITECTURE}/release/${DYLIB_NAME}.dylib" $CIRCUIT_FRAMEWORK_PATH/
 
     print_action "CircuitBindings XCFramework created successfully"
 }

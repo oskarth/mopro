@@ -49,7 +49,7 @@ extension KeccakDylibCircuitView {
 
                     // Use Bundle.main to locate the dynamic library within the app bundle
                     guard let dylibPath =
-                      Bundle.main.path(forResource: "keccak256", ofType: "dylib", inDirectory: "Frameworks")  else {
+                      Bundle.main.path(forResource: "keccak256", ofType: "dylib", inDirectory: "Frameworks/CircuitBindings.framework")  else {
                         throw NSError(domain: "com.example.error", code: 1,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to find keccak256.dylib in app bundle"])
                     }
