@@ -48,6 +48,12 @@ uniffi = { version = "0.28", features = ["build"] }
 
 Now you should copy your wasm and zkey files somewhere in the project folder. For this tutorial we'll assume you placed them in `test-vectors/circom`.
 
+:::info
+Download example multiplier2 wasm and zkey here:
+- [multiplier2.wasm](https://github.com/zkmopro/mopro/raw/ae88356e680ac4d785183267d6147167fabe071c/test-vectors/circom/multiplier2.wasm)
+- [multiplier2_final.zkey](https://github.com/zkmopro/mopro/raw/ae88356e680ac4d785183267d6147167fabe071c/test-vectors/circom/multiplier2_final.zkey)
+:::
+
 Now we need to add 4 rust files. First we'll add `build.rs` in the main project folder. This file should contain the following:
 
 ```rust
@@ -71,7 +77,7 @@ Second we'll change the file at `./src/lib.rs` to look like the following:
 use mopro_ffi::{app, WtnsFn};
 
 // Here we're generating the C functions for a circuit named
-// multiplier3.
+// multiplier2.
 // Your circuit name will be the name of the wasm file all lowercase
 // with spaces, dashes and underscores removed
 //
@@ -79,7 +85,7 @@ use mopro_ffi::{app, WtnsFn};
 // multiplier2 -> multiplier2
 // keccak_256_256_main -> keccak256256main
 // aadhaar-verifier -> aadhaarverifier
-rust_witness::witness!(multiplier3);
+rust_witness::witness!(multiplier2);
 
 // Here we're calling a macro exported by uniffi. This macro will
 // write some functions and bind them to the uniffi UDL file. These
@@ -93,7 +99,7 @@ app!();
 // rust_witness.
 fn zkey_witness_map(name: &str) -> Result<WtnsFn, MoproError> {
     match name {
-        "multiplier3_final.zkey" => Ok(multiplier3_witness),
+        "multiplier2_final.zkey" => Ok(multiplier2_witness),
         _ => Err(MoproError::CircomError("Unknown circuit name".to_string())),
     }
 }

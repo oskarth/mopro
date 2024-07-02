@@ -30,7 +30,7 @@ This will make the proving functions `generateCircomProof` and `verifyCircomProo
 In the `ContentView` itself add a private variable and a button like this:
 ```swift
 struct ContentView: View {
-    private let zkeyPath = Bundle.main.path(forResource: "multiplier3_final", ofType: "zkey")!
+    private let zkeyPath = Bundle.main.path(forResource: "multiplier2_final", ofType: "zkey")!
 
     var body: some View {
         VStack {
@@ -41,7 +41,7 @@ struct ContentView: View {
 }
 ```
 
-We use the `Bundle` api to retrieve the full path to our zkey. Change `multiplier3_final` to the name of your zkey.
+We use the `Bundle` api to retrieve the full path to our zkey. Change `multiplier2_final` to the name of your zkey.
 
 At the bottom of this file we'll add an extension with a function to generate a proof. In this example we're going to prove a simple circuit that accepts two inputs named `a` and `b` and generates an output `c`.
 
@@ -66,7 +66,11 @@ extension ContentView {
         let start = CFAbsoluteTimeGetCurrent()
         
         // Call into the compiled static library
-        let generateProofResult = try generateCircomProof(zkeyPath: zkeyPath, circuitInputs: inputs)
+        do {
+            let generateProofResult = try generateCircomProof(zkeyPath: zkeyPath, circuitInputs: inputs)
+        } catch {
+            print("Error generate a proof: \(error)")
+        }
 
         // Make some assertions about the resulting proof
         assert(!generateProofResult.proof.isEmpty, "Proof should not be empty")
